@@ -8,6 +8,12 @@ A Python module finds personally identifiable information from texts using NER a
 
 ## Development
 
+### Install dev requirements
+
+```
+pip install -r requirements-dev.txt
+```
+
 ### Install the pre-commit hooks
 
 ```
