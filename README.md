@@ -1,6 +1,6 @@
-# PII Identifier
+# German PII Identifier
 
-A Python module finds personally identifiable information in German texts using NER and rule based matching.
+A Python module finds personally identifiable information in **German** texts using NER and rule based matching.
 
 _**Disclaimer:**_ **This is a prototype only, which must not be used in production. The set of indicators is incomplete
 and not sufficient for a reliable identification of all personally identifiable information. Furthermore, the code may
@@ -36,5 +36,9 @@ pre-commit run --all-files
 
 The tests can be executed with:
 ```
-pytest --doctest-modules --cov-report term --cov=expose_text
+pytest --doctest-modules --cov-report term --cov=pii_identifier
+```
+To skip slow tests run:
+```
+pytest --doctest-modules --cov-report term --cov=pii_identifier -m "not slow"
 ```
