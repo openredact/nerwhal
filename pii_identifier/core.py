@@ -46,4 +46,4 @@ def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:
 
 
 def tune(text: str, gold: List[Pii]):
-    pass
+    raise NotImplementedError

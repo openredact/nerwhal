@@ -6,7 +6,11 @@ def aggregate(piis, *other_piis, strategy="keep_all"):
     # - rescore: if a pii is found twice, combine the scores
 
     if strategy == "keep_all":
-        [piis.extend(other) for other in other_piis]
+        _keep_all_strategy(piis, other_piis)
     else:
         raise ValueError(f"Unknown aggregation strategy {strategy}")
     return piis
+
+
+def _keep_all_strategy(piis, *other_piis):
+    return [piis.extend(other) for other in other_piis]
