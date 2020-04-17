@@ -40,5 +40,5 @@ pytest --doctest-modules --cov-report term --cov=pii_identifier
 ```
 To skip slow tests run:
 ```
-pytest --doctest-modules --cov-report term --cov=pii_identifier -m "not slow"
+pytest --doctest-modules -m "not slow"
 ```
