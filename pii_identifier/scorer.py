@@ -1,8 +1,4 @@
-from typing import List
-
 from spacy.scorer import PRFScore
-
-from pii_identifier import Pii, Score
 
 
 def score(candidates, gold):
@@ -17,16 +13,36 @@ def score(candidates, gold):
     false_positives = prf_scorer.fp
     false_negatives = prf_scorer.fn
 
-    return Score(f1, f2, precision, recall, true_positives, false_positives, false_negatives)
+    return {
+        "f1": f1,
+        "f2": f2,
+        "precision": precision,
+        "recall": recall,
+        "true_positives": true_positives,
+        "false_positives": false_positives,
+        "false_negatives": false_negatives,
+    }
 
 
-def score_piis(piis: List[Pii], gold: List[Pii]):
-    return score(_to_start_end_type_tuples(piis), _to_start_end_type_tuples(gold))
+def score_piis(piis, gold):
+    pii_tuples = _to_start_end_type_tuples(piis)
+    gold_tuples = _to_start_end_type_tuples(gold)
+    types = set([_type for _, _, _type in gold_tuples])
+
+    scores = {"total": score(pii_tuples, gold_tuples)}
+    for _type in types:
+        scores[_type] = score(_items_with_type(_type, pii_tuples), _items_with_type(_type, gold_tuples))
+
+    return scores
 
 
 def _to_start_end_type_tuples(piis):
     tuples = [(pii.start, pii.end, pii.type) for pii in piis]
     return tuples
+
+
+def _items_with_type(_type, start_end_type_tuples):
+    return [_tuple for _tuple in start_end_type_tuples if _tuple[2] == _type]
 
 
 def _fbeta_score(beta, p, r):

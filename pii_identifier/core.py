@@ -17,17 +17,6 @@ class Pii:
     model: str
 
 
-@dataclass
-class Score:
-    f1: float
-    f2: float
-    precision: float
-    recall: float
-    true_positives: float
-    false_positives: float
-    false_negatives: float
-
-
 # STATE
 # - with importing core, all the heavy work like loading models is done
 # - calling find_piis creates a new transient pipe config
@@ -52,7 +41,7 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
     return piis
 
 
-def evaluate(piis: List[Pii], gold: List[Pii]) -> Score:
+def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:
     return score_piis(piis, gold)
 
 
