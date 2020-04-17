@@ -2,7 +2,7 @@ import spacy
 from spacy.pipeline import EntityRuler
 from spacy.tokens import Span
 
-from pii_identifier import PII
+from pii_identifier import Pii
 from pii_identifier.backends.backend_base import NlpBackend
 from pii_identifier.recognizers import SpacyStatisticalRecognizer
 from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
@@ -64,5 +64,5 @@ class SpacyBackend(NlpBackend):
 
         piis = []
         for ent in doc.ents:
-            piis += [PII(ent.start_char, ent.end_char, ent.label_, ent.text, ent._.precision, ent._.model)]
+            piis += [Pii(ent.start_char, ent.end_char, ent.label_, ent.text, ent._.precision, ent._.model)]
         return piis

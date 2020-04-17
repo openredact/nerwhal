@@ -2,7 +2,7 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 from segtok.segmenter import split_single
 
-from pii_identifier import PII
+from pii_identifier import Pii
 from pii_identifier.backends.backend_base import NlpBackend
 from pii_identifier.recognizers.flair_statistical_recognizer import FlairStatisticalRecognizer
 
@@ -31,7 +31,7 @@ class FlairBackend(NlpBackend):
         piis = []
         for sentence in sentences:  # TODO multiple sentences require a pos shift
             piis += [
-                PII(ent.start_pos, ent.end_pos, _align_tags(ent.tag), ent.text, ent.score, "flair_ner_multi_fast")
+                Pii(ent.start_pos, ent.end_pos, _align_tags(ent.tag), ent.text, ent.score, "flair_ner_multi_fast")
                 for ent in sentence.get_spans("ner")
             ]
 
