@@ -24,17 +24,18 @@ class Pii:
 
 def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep_all") -> List[Pii]:
     backends = {}
-    for recognizer in recognizers:
-        if recognizer.backend_type not in backends:
+    for recognizer_cls in recognizers:
+        recognizer = recognizer_cls()
+        if recognizer.backend not in backends:
             # import backend modules only if they are used
-            backend_cls = pii_identifier.backends.load(recognizer.backend_type)
-            backends[recognizer.backend_type] = backend_cls()
+            backend_cls = pii_identifier.backends.load(recognizer.backend)
+            backends[recognizer.backend] = backend_cls()
 
-        backends[recognizer.backend_type].register_recognizer(recognizer)
+        backends[recognizer.backend].register_recognizer(recognizer)
 
     results = []
     for backend in backends.values():
-        results += backend.run(text)
+        results += [backend.run(text)]
 
     piis = aggregate(*results, strategy=aggregation_strategy)
 

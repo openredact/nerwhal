@@ -3,13 +3,13 @@ from importlib import import_module
 
 def load(backend):
     if backend == "spacy":
-        mod = "spacy_backend"
+        mod = ".spacy_backend"
         cls = "SpacyBackend"
     elif backend == "flair":
-        mod = "flair_backend"
+        mod = ".flair_backend"
         cls = "FlairBackend"
     elif backend == "re":
-        mod = "re_backend"
+        mod = ".re_backend"
         cls = "ReBackend"
     else:
         raise ValueError(f"Unknow backend type {backend}")

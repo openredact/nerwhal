@@ -36,7 +36,7 @@ nlp.add_pipe(empty_ruler, name="entityruler", before="ner")
 nlp.add_pipe(label_ents(1.0, "spacy_entityruler"), name="label_entityruler_ents", after="entityruler")
 
 # get score: https://github.com/explosion/spaCy/issues/881
-nlp.add_pipe(label_ents(nlp.meta["accuracy"]["ents_p"], "spacy_de_core_news_sm"), name="label_ner_ents", after="ner")
+nlp.add_pipe(label_ents(nlp.meta["accuracy"]["ents_p"], "spacy_" + MODEL), name="label_ner_ents", after="ner")
 
 
 class SpacyBackend(NlpBackend):
