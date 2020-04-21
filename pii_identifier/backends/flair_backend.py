@@ -1,16 +1,19 @@
-from flair.data import Sentence
-from flair.models import SequenceTagger
-from segtok.segmenter import split_single
+import warnings
 
-from pii_identifier import Pii
-from pii_identifier.backends.backend_base import NlpBackend
-from pii_identifier.recognizers.flair_statistical_recognizer import FlairStatisticalRecognizer
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+
+    from flair.data import Sentence
+    from flair.models import SequenceTagger
+    from segtok.segmenter import split_single
+
+from pii_identifier import Pii  # noqa: E402
+from pii_identifier.backends.backend_base import NlpBackend  # noqa: E402
+from pii_identifier.recognizers.flair_statistical_recognizer import FlairStatisticalRecognizer  # noqa: E402
 
 MODEL = "de-ner-germeval"  # Germeval,  84.90 F1
 
 tagger = SequenceTagger.load(MODEL)
-
-# TODO mute flair import warnings
 
 
 class FlairBackend(NlpBackend):
