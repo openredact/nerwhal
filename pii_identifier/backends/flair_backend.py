@@ -32,11 +32,20 @@ class FlairBackend(NlpBackend):
         tagger.predict(sentences)
 
         piis = []
-        for sentence in sentences:  # TODO multiple sentences require a pos shift
+        pos_shift = 0
+        for sentence in sentences:
             piis += [
-                Pii(ent.start_pos, ent.end_pos, _align_tags(ent.tag), ent.text, ent.score, "flair_" + MODEL)
+                Pii(
+                    ent.start_pos + pos_shift,
+                    ent.end_pos + pos_shift,
+                    _align_tags(ent.tag),
+                    ent.text,
+                    ent.score,
+                    "flair_" + MODEL,
+                )
                 for ent in sentence.get_spans("ner")
             ]
+            pos_shift += len(sentence.to_original_text()) + 1  # 1 for the space/newline after the sentence terminal
 
         return piis
 
