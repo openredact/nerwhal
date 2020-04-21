@@ -1,24 +1,29 @@
-def aggregate(piis, strategy="keep_all"):
-    """
+def aggregate(piis, *other_piis, strategy="keep_all"):
+    """Aggregate two or more lists of Piis.
 
-    :param piis: a list of piis
-    :param strategy:
-    :return:
+    You can choose from several strategies for how to deal with overlapping Piis.
+    - `keep_all`: Append all lists and keep all Piis.
+    - `ensure_disjointness`: Like `keep_all`, but raises an `AssertionError` if two Piis overlap.
+    - `merge`: Appends the lists while choosing the Pii with higher score on overlaps.
     """
-    piis.sort(key=lambda pii: (pii.start, pii.end, 1.0 - pii.score, pii.type))
+    items = piis.copy()
+    for _piis in other_piis:
+        items.extend(_piis)
+
+    items.sort(key=lambda pii: (pii.start, pii.end, 1.0 - pii.score, pii.type))
 
     if strategy == "keep_all":
-        aggregated = piis
-    elif strategy == "only_disjoint":
-        aggregated = _only_disjoint_strategy(piis)
+        aggregated = items
+    elif strategy == "ensure_disjointness":
+        aggregated = _ensure_disjointness_strategy(items)
     elif strategy == "merge":
-        aggregated = _merge_strategy(piis)
+        aggregated = _merge_strategy(items)
     else:
         raise ValueError(f"Unknown aggregation strategy {strategy}")
     return aggregated
 
 
-def _only_disjoint_strategy(piis):
+def _ensure_disjointness_strategy(piis):
     # check that all piis are disjunct by comparing end of previous pii with start of the current one
     prev_pii_end = 0
     for pii in piis:
@@ -29,33 +34,26 @@ def _only_disjoint_strategy(piis):
     return piis
 
 
-def _piis_overlap(pii_a, pii_b):
+def _overlapping(pii_a, pii_b):
     return pii_a.start <= pii_b.start < pii_a.end or pii_a.start < pii_b.end <= pii_a.end
 
 
+def _overlapping_and_outscored(pii, other_pii):
+    return other_pii and _overlapping(pii, other_pii) and pii.score < other_pii.score
+
+
 def _merge_strategy(piis):
-    """
-    Note, that this might have unwanted results when a group of piis is overlapping
-    :param piis:
-    :return:
-    """
     res = []
     prev_pii = None
     for idx, pii in enumerate(piis):
         next_pii = piis[idx + 1] if idx + 1 < len(piis) else None
 
-        if (
-            next_pii
-            and _piis_overlap(pii, next_pii)
-            and pii.score < next_pii.score
-            or prev_pii
-            and _piis_overlap(pii, prev_pii)
-            and pii.score < prev_pii.score
-        ):
-            # don't add piis that are overlapping with one that has a higher score
+        if _overlapping_and_outscored(pii, prev_pii) or _overlapping_and_outscored(pii, next_pii):
+            # don't add this one
             continue
 
         res += [pii]
+
         prev_pii = pii
 
     return res

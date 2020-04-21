@@ -33,11 +33,11 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
 
         backends[recognizer.backend].register_recognizer(recognizer)
 
-    results = []
+    results = ()
     for backend in backends.values():
-        results += backend.run(text)
+        results += (backend.run(text),)
 
-    piis = aggregate(results, strategy=aggregation_strategy)
+    piis = aggregate(*results, strategy=aggregation_strategy)
 
     return piis
 
