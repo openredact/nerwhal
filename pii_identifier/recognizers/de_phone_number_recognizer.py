@@ -86,5 +86,5 @@ class DePhoneNumberRecognizer(SpacyEntityRulerRecognizer):
     ]
 
     @property
-    def patterns(self):
-        return self._add_label(self.phone_patterns, "PHONE")
+    def rules(self):
+        return self._create_rules(self.phone_patterns, "PHONE")

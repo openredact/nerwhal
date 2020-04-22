@@ -42,19 +42,19 @@ nlp.add_pipe(label_ents(nlp.meta["accuracy"]["ents_p"] / 100, "spacy_" + MODEL),
 class SpacyBackend(NlpBackend):
     def __init__(self):
         self.with_statistical_ner = False
-        self.entityruler_patterns = []
+        self.entityruler_rules = []
 
     def register_recognizer(self, recognizer):
         if isinstance(recognizer, SpacyStatisticalRecognizer):
             self.with_statistical_ner = True
         elif isinstance(recognizer, SpacyEntityRulerRecognizer):
-            self.entityruler_patterns += recognizer.patterns
+            self.entityruler_rules += recognizer.rules
         else:
             raise TypeError(f"Trying to register recognizer with unsupported type {type(recognizer)}")
 
     def run(self, text):
         ruler = EntityRuler(nlp)
-        ruler.add_patterns(self.entityruler_patterns)
+        ruler.add_patterns(self.entityruler_rules)
         nlp.replace_pipe("entityruler", ruler)
 
         if self.with_statistical_ner:

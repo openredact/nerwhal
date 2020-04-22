@@ -18,17 +18,17 @@ class DeStateRecognizer(SpacyEntityRulerRecognizer):
                     multi_word_states.add(name)
 
         # [{"label": "STATE", "pattern": "Deutschland"}, ...]
-        one_word_rules = self._add_label(one_word_states, "STATE")
+        one_word_rules = self._create_rules(one_word_states, "STATE")
 
         multi_word_patterns = self._compute_multi_word_patterns(multi_word_states)
         # [{"label": "STATE", "pattern": [{"LEMMA": "Bundesrepublik"}, {"LEMMA": "Deutschland"}]}, ...]
-        multi_word_rules = self._add_label(multi_word_patterns, "STATE")
+        multi_word_rules = self._create_rules(multi_word_patterns, "STATE")
 
-        self.state_patterns = one_word_rules + multi_word_rules
+        self.state_rules = one_word_rules + multi_word_rules
 
     @property
-    def patterns(self):
-        return self.state_patterns
+    def rules(self):
+        return self.state_rules
 
     def _read_data(self):
         path = Path(__file__).parent / "data" / "states.csv"
