@@ -5,7 +5,8 @@ from pii_identifier.backends.backend_base import NlpBackend
 
 
 class ReBackend(NlpBackend):
-    recognizers = []
+    def __init__(self):
+        self.recognizers = []
 
     def register_recognizer(self, recognizer):
         self.recognizers += [recognizer]

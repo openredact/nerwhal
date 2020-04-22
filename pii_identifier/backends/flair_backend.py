@@ -17,7 +17,8 @@ tagger = SequenceTagger.load(MODEL)
 
 
 class FlairBackend(NlpBackend):
-    active = False
+    def __init__(self):
+        self.active = False
 
     def register_recognizer(self, recognizer):
         if isinstance(recognizer, FlairStatisticalRecognizer):

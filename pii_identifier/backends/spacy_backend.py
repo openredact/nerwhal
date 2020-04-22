@@ -40,8 +40,9 @@ nlp.add_pipe(label_ents(nlp.meta["accuracy"]["ents_p"] / 100, "spacy_" + MODEL),
 
 
 class SpacyBackend(NlpBackend):
-    with_statistical_ner = False
-    entityruler_patterns = []
+    def __init__(self):
+        self.with_statistical_ner = False
+        self.entityruler_patterns = []
 
     def register_recognizer(self, recognizer):
         if isinstance(recognizer, SpacyStatisticalRecognizer):
