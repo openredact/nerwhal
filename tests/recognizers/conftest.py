@@ -12,6 +12,7 @@ def stat_recognizer(request):
 @pytest.fixture
 def set_up_backend():
     def function(recognizer):
+        """Create the appropriate backend for the recognizer and register it."""
         if recognizer.backend == "spacy":
             from pii_identifier.backends.spacy_backend import SpacyBackend
 
@@ -29,19 +30,5 @@ def set_up_backend():
 
         backend.register_recognizer(recognizer)
         return backend
-
-    return function
-
-
-@pytest.fixture
-def embed():
-    def function(text, piis):
-        """
-        This assumes piis to be sorted ascending and non-overlapping.
-        """
-
-        for pii in reversed(piis):
-            text = text[: pii.start] + pii.type + text[pii.end :]
-        return text
 
     return function
