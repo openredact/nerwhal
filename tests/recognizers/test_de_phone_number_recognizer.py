@@ -1,11 +1,11 @@
 import pytest
 
-from pii_identifier.recognizers import PhoneNumberRecognizer
+from pii_identifier.recognizers import DePhoneNumberRecognizer
 
 
 @pytest.fixture
 def backend(set_up_backend):
-    recognizer = PhoneNumberRecognizer()
+    recognizer = DePhoneNumberRecognizer()
     backend = set_up_backend(recognizer)
     return backend
 

@@ -10,7 +10,7 @@ from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRe
 MODEL = "de_core_news_sm"
 
 # do the heavy lifting at time of module import
-nlp = spacy.load(MODEL, disable=["tagger", "parser"])
+nlp = spacy.load(MODEL, disable=["parser"])
 
 # configure spacy objects and language pipeline
 if not Span.has_extension("precision"):

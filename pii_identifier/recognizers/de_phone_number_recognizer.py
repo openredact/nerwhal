@@ -1,7 +1,7 @@
 from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
 
 
-class PhoneNumberRecognizer(SpacyEntityRulerRecognizer):
+class DePhoneNumberRecognizer(SpacyEntityRulerRecognizer):
     """
     Note that this is by no means exhaustive or precise, as there are so many different ways to write a phone number.
     """
