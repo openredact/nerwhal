@@ -13,7 +13,7 @@ class Pii:
     end: int
     type: str
     text: str
-    score: float
+    score: float  # the confidence that this text passage is a Pii of the stated type
     model: str
 
 
