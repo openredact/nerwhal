@@ -2,7 +2,6 @@ import csv
 import itertools
 from pathlib import Path
 
-from pii_identifier.backends.spacy_backend import nlp
 from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
 
 
@@ -52,6 +51,8 @@ class DeStateRecognizer(SpacyEntityRulerRecognizer):
 
     def _get_variants(self, words):
         """Get the lemma. Mostly to be able to detect declinations of adjectives later on."""
+        from pii_identifier.backends.spacy_backend import nlp
+
         result = ()
         for word in words.split():
             # we want word itself to be a variant of word
