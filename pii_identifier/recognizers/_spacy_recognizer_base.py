@@ -12,3 +12,6 @@ class SpacyEntityRulerRecognizer(Recognizer):
     @abstractmethod
     def patterns(self):
         pass
+
+    def _add_label(self, patterns, label):
+        return [{"label": label, "pattern": pattern} for pattern in patterns]
