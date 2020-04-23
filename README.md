@@ -18,7 +18,8 @@ Note, that while the package is language agnostic, the included models and recog
 _**:warning: Disclaimer :warning::**_ This is a prototype, which must not be used in production without further protections. For
 the following reasons not all PIIs can be found:
 - the set of recognizers is not exhaustive
-- the rules of each recognizer do not cover all of the ways in which information can be expressed
+- the rules of each recognizer do not cover all of the ways in which information can be expressed; the limitations of
+each recognizer are to the best of our knowledge noted in its code documentation.
 - the statistical models used are not perfect and cannot be expected uncover all occurrences of the named entities that
 they are looking for
 - further this is a work in process which may contain bugs
@@ -34,8 +35,7 @@ The recognizers are built on top of powerful NLP engines:
 - and of course the good ol' regular expressions
 
 The engines can be found in the [Backends Package](pii_identifier/backends). The recognizers operate on these backends
-and are located in the [Recognizers Package](pii_identifier/recognizers). The limitations of each recognizer are
- - to the best of our knowledge - noted in its code documentation.
+and are located in the [Recognizers Package](pii_identifier/recognizers).
 
 ## Usage
 
