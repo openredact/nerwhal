@@ -24,7 +24,10 @@ def aggregate(piis, *other_piis, strategy="keep_all"):
 
 
 def _ensure_disjointness_strategy(piis):
-    # check that all piis are disjunct by comparing end of previous pii with start of the current one
+    """A strategy that ensures that all PIIs are disjoint.
+
+    Checks that all piis are disjoint by comparing end of previous pii with start of the current one.
+    """
     prev_pii_end = 0
     for pii in piis:
         if prev_pii_end > pii.start:
@@ -43,6 +46,7 @@ def _overlapping_and_outscored(pii, other_pii):
 
 
 def _merge_strategy(piis):
+    """A strategy to resolve overlapping PIIs by giving those with higher scores priority."""
     res = []
     prev_pii = None
     for idx, pii in enumerate(piis):

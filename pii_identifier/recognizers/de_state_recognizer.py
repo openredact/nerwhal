@@ -6,6 +6,11 @@ from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRe
 
 
 class DeStateRecognizer(SpacyEntityRulerRecognizer):
+    """Recognize German state names in short and long form.
+
+    The long form is also recognized in many declined forms.
+    """
+
     def __init__(self):
         one_word_states = set()
         multi_word_states = set()
@@ -36,9 +41,14 @@ class DeStateRecognizer(SpacyEntityRulerRecognizer):
             reader = csv.reader(csv_file, delimiter=";")
             return list(reader)
 
-    def _compute_multi_word_patterns(self, multi_word_states):
+    def _compute_multi_word_patterns(self, name_with_multiple_words):
+        """Compute several versions of entity ruler patterns for names with multiple words.
+
+        States with multiple words aren't matched exactly but by matching against the lemma of each word.
+        Frequently, `lemma(a_lemma)` is not the identity function which could matching lemma against lemma fail.
+        Thus, we also add the original word to the pattern to catch cases where `lemma(word) == original_word`."""
         multi_word_states_patterns = []
-        for name in multi_word_states:
+        for name in name_with_multiple_words:
             # (["vereinigt", "Vereinigte"], ["Staat", "Staaten"])
             variants = self._get_variants(name)
 

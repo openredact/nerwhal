@@ -21,10 +21,5 @@ class ReRecognizer(Recognizer):
     @property
     @abstractmethod
     def precision(self):
-        """This is the estimated confidence that a found match is of the respective entity.
-
-        Precision == How many found elements are relevant
-
-        Note that the score is always a rough estimate, which might be totally off.
-        Exact scores can only be computed on the data with gold annotations."""
+        """The estimated confidence that a match is of the respective entity."""
         pass

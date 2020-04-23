@@ -2,6 +2,13 @@ from spacy.scorer import PRFScore
 
 
 def score(candidates, gold):
+    """Compute the most common scoring measures for any two sets.
+
+    :param candidates: the candidates to be scored; the predicted values
+    :param gold: the true values
+    :return: a dictionary with the scores
+    """
+
     prf_scorer = PRFScore()
     prf_scorer.score_set(set(candidates), set(gold))
 
@@ -25,6 +32,12 @@ def score(candidates, gold):
 
 
 def score_piis(piis, gold):
+    """Compute a range of scores for a list of piis compared to the true piis contained in the text.
+
+    :param piis: a list of piis, as returned by `pii_identifier.find_piis`
+    :param gold: the true list of piis
+    :return: a dictionary with the scores
+    """
     pii_tuples = _to_start_end_type_tuples(piis)
     gold_tuples = _to_start_end_type_tuples(gold)
     types = set([_type for _, _, _type in gold_tuples])

@@ -2,8 +2,19 @@ from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRe
 
 
 class DePhoneNumberRecognizer(SpacyEntityRulerRecognizer):
-    """
-    Note that this is by no means exhaustive or precise, as there are so many different ways to write a phone number.
+    """Recognize phone numbers that follow several common German national and international patterns.
+
+    This recognizer finds numbers of DIN 5008 and E.123 style, Microsoft's canonical number format, and some
+    non-standard but frequently used styles.
+
+    Consider the following remarks and limitations:
+    - as there are many ways in which a phone number can be formatted, we cannot match all of them
+    - making the patterns too universal may produce false positives for entirely different numbers
+    - selecting the constants that limit the length of the number's parts constitutes a trade-off between detecting
+      more phone numbers in less common formats vs producing false identifications
+    - especially some unforeseen formatting into blocks of the national phone number may overlook numbers
+    - numbers in foreign styles or numbers in German style that represent a foreign number aren't tested and may not be
+      recognized
     """
 
     COUNTRY_CODES_REGEX = r"^(\+|[00])\d{1,4}$"

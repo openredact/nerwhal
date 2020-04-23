@@ -1,3 +1,10 @@
+"""
+This module implements the public API of the pii_identifier.
+
+The machine learning models are loaded once they are used first. That will be when a recognizer based on the respective
+backend is used in `find_piis`.
+"""
+
 from dataclasses import dataclass
 from typing import List
 
@@ -17,12 +24,13 @@ class Pii:
     model: str
 
 
-# STATE
-# - with importing core, all the heavy work like loading models is done
-# - calling find_piis creates a new transient pipe config
-
-
 def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep_all") -> List[Pii]:
+    """Find personally identifiable data in the given text and return it.
+
+    :param text:
+    :param recognizers: a list of classes that implement the `Recognizer` interface
+    :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
+    """
     backends = {}
     for recognizer_cls in recognizers:
         recognizer = recognizer_cls()
@@ -43,8 +51,10 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
 
 
 def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:
+    """Compute the scores of a list of found PIIs compared to the corresponding true PIIs."""
     return score_piis(piis, gold)
 
 
 def tune(text: str, gold: List[Pii]):
+    """Improve the machine learning models with the provided examples."""
     raise NotImplementedError

@@ -12,7 +12,7 @@ def stat_recognizer(request):
 @pytest.fixture
 def set_up_backend():
     def function(recognizer):
-        """Create the appropriate backend for the recognizer and register it."""
+        """Create a backend for the given recognizer and register the recognizer at it."""
         if recognizer.backend == "spacy":
             from pii_identifier.backends.spacy_backend import SpacyBackend
 

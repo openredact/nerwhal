@@ -10,19 +10,19 @@ A Python module that finds personally identifiable information in unstructured t
 
 ## Description
 
-PII Identifier is a framework that helps finding PIIs (Personally Identifiable Information) in text. Recognizers uncover
+PII Identifier is a framework that helps find PIIs (Personally Identifiable Information) in text. Recognizers uncover
 mentions that can be used to identify persons, such as name, phone number or place of birth.
 
 Note, that while the package is language agnostic, the included models and recognizers are for the **German** language.
 
-_**:warning: Disclaimer:**_ This is a prototype, which must not be used in production without further protections. For
+_**:warning: Disclaimer :warning::**_ This is a prototype, which must not be used in production without further protections. For
 the following reasons not all PIIs can be found:
 - the set of recognizers is not exhaustive
 - the rules of each recognizer do not cover all of the ways in which information can be expressed
 - the statistical models used are not perfect and cannot be expected uncover all occurrences of the named entities that
 they are looking for
 - further this is a work in process which may contain bugs
-Further note, that the recognizers may return false positive findings. This work is limited to identifying named
+Further note, that the recognizers may return false positive finds. This work is limited to identifying named
 entities in the given text and that many indirect indicators as well as linkage with other data is out-of-scope.
 
 
@@ -34,7 +34,8 @@ The recognizers are built on top of powerful NLP engines:
 - and of course the good ol' regular expressions
 
 The engines can be found in the [Backends Package](pii_identifier/backends). The recognizers operate on these backends
-and are located in the [Recognizers Package](pii_identifier/recognizers).
+and are located in the [Recognizers Package](pii_identifier/recognizers). The limitations of each recognizer are
+ - to the best of our knowledge - noted in its code documentation.
 
 ## Usage
 
