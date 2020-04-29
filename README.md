@@ -47,10 +47,20 @@ piis = find_piis(your_text)
 
 ## Development
 
-### Install dev requirements
+### Install requirements
+
+You can install all requirements using:
 
 ```
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
+```
+
+Compared to installation with `setup.py`, [requirements.txt](requirements.txt) additionally installs developer dependencies.
+
+To install it using `setup.py` run:
+
+```
+pip install .
 ```
 
 ### Install the pre-commit hooks
