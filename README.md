@@ -4,7 +4,7 @@ A Python module that finds personally identifiable information in unstructured t
 
 ---
 
-![Tests](https://github.com/langhabel/pii-identifier/workflows/Tests/badge.svg?branch=master)
+![Tests](https://github.com/openredact/pii-identifier/workflows/Tests/badge.svg?branch=master)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/ambv/black)
 
