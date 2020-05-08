@@ -6,12 +6,13 @@ backend is used in `find_piis`.
 """
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 import pii_identifier.backends
 from pii_identifier.aggregation_strategies import aggregate
 from pii_identifier.recognizers import __all__ as all_recognizers
 from pii_identifier.scorer import score_piis
+from pii_identifier.utils import _tokenize, _translate_to_token_based
 
 
 @dataclass
@@ -24,7 +25,9 @@ class Pii:
     model: str
 
 
-def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep_all") -> List[Pii]:
+def find_piis(
+    text: str, recognizers=all_recognizers, aggregation_strategy="keep_all", as_tokens=False
+) -> (List[Pii], Optional[List]):
     """Find personally identifiable data in the given text and return it.
 
     :param text:
@@ -49,7 +52,12 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
 
     piis = aggregate(*results, strategy=aggregation_strategy)
 
-    return piis
+    if as_tokens:
+        tokenization = _tokenize(text)
+        token_based_piis = _translate_to_token_based(piis, tokenization)
+        return tokenization, token_based_piis
+    else:
+        return piis
 
 
 def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:
