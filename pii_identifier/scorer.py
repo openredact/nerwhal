@@ -38,24 +38,24 @@ def score_piis(piis, gold):
     :param gold: the true list of piis
     :return: a dictionary with the scores
     """
-    pii_tuples = _to_start_end_type_tuples(piis)
-    gold_tuples = _to_start_end_type_tuples(gold)
-    types = set([_type for _, _, _type in gold_tuples])
+    pii_tuples = _to_start_end_tag_tuples(piis)
+    gold_tuples = _to_start_end_tag_tuples(gold)
+    tags = set([tag for _, _, tag in gold_tuples])
 
     scores = {"total": score(pii_tuples, gold_tuples)}
-    for _type in types:
-        scores[_type] = score(_items_with_type(_type, pii_tuples), _items_with_type(_type, gold_tuples))
+    for tag in tags:
+        scores[tag] = score(_items_with_tag(tag, pii_tuples), _items_with_tag(tag, gold_tuples))
 
     return scores
 
 
-def _to_start_end_type_tuples(piis):
-    tuples = [(pii.start, pii.end, pii.type) for pii in piis]
+def _to_start_end_tag_tuples(piis):
+    tuples = [(pii.start, pii.end, pii.tag) for pii in piis]
     return tuples
 
 
-def _items_with_type(_type, start_end_type_tuples):
-    return [_tuple for _tuple in start_end_type_tuples if _tuple[2] == _type]
+def _items_with_tag(tag, start_end_tag_tuples):
+    return [_tuple for _tuple in start_end_tag_tuples if _tuple[2] == tag]
 
 
 def _fbeta_score(beta, p, r):

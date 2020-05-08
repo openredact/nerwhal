@@ -10,7 +10,7 @@ def aggregate(piis, *other_piis, strategy="keep_all"):
     for _piis in other_piis:
         items.extend(_piis)
 
-    items.sort(key=lambda pii: (pii.start, pii.end, 1.0 - pii.score, pii.type))
+    items.sort(key=lambda pii: (pii.start, pii.end, 1.0 - pii.score, pii.tag))
 
     if strategy == "keep_all":
         aggregated = items

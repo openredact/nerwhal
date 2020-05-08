@@ -18,9 +18,9 @@ from pii_identifier.scorer import score_piis
 class Pii:
     start: int
     end: int
-    type: str
+    tag: str
     text: str
-    score: float  # the confidence that this text passage is a Pii of the stated type
+    score: float  # the confidence that this text passage is a Pii of the stated tag
     model: str
 
 
@@ -30,6 +30,8 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
     :param text:
     :param recognizers: a list of classes that implement the `Recognizer` interface
     :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
+    :param as_tokens: the default is to return the PIIs based on indices in the input text, if true
+        return the PIIs based on the index of the text's tokens together with its tokenization
     """
     backends = {}
     for recognizer_cls in recognizers:
