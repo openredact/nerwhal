@@ -2,20 +2,24 @@ def _tokenize(text):
     from pii_identifier.backends.spacy_backend import nlp
 
     doc = nlp(text)
-    return [(token.text, token.whitespace_ == " ") for token in doc]
+
+    return [
+        {"text": token.text, "has_ws": token.whitespace_ == " ", "start_char": token.idx, "end_char": token.idx + len(token)}
+        for token in doc
+    ]
 
 
 def _add_token_indices(piis, tokenization):
     pos_to_token_idx = {}
 
     pos = 0
-    for idx, (token_text, token_has_ws) in enumerate(tokenization):
-        token_len = len(token_text)
+    for idx, token in enumerate(tokenization):
+        token_len = len(token["text"])
         pos_to_token_idx[pos] = idx  # start
         pos_to_token_idx[pos + token_len - 1] = idx  # end
 
         pos += token_len
-        if token_has_ws:
+        if token["has_ws"]:
             pos += 1
 
     for pii in piis:
