@@ -6,35 +6,33 @@ backend is used in `find_piis`.
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 import pii_identifier.backends
 from pii_identifier.aggregation_strategies import aggregate
 from pii_identifier.recognizers import __all__ as all_recognizers
 from pii_identifier.scorer import score_piis
-from pii_identifier.utils import _tokenize, _translate_to_token_based
+from pii_identifier.utils import _tokenize, _add_token_indices
 
 
 @dataclass
 class Pii:
-    start: int
-    end: int
+    start_char: int
+    end_char: int
     tag: str
     text: str
     score: float  # the confidence that this text passage is a Pii of the stated tag
     model: str
+    start_tok: int = None
+    end_tok: int = None
 
 
-def find_piis(
-    text: str, recognizers=all_recognizers, aggregation_strategy="keep_all", as_tokens=False
-) -> (List[Pii], Optional[List]):
+def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep_all") -> dict:
     """Find personally identifiable data in the given text and return it.
 
     :param text:
     :param recognizers: a list of classes that implement the `Recognizer` interface
     :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
-    :param as_tokens: the default is to return the PIIs based on indices in the input text, if true
-        return the PIIs based on the index of the text's tokens together with its tokenization
     """
     backends = {}
     for recognizer_cls in recognizers:
@@ -52,12 +50,9 @@ def find_piis(
 
     piis = aggregate(*results, strategy=aggregation_strategy)
 
-    if as_tokens:
-        tokenization = _tokenize(text)
-        token_based_piis = _translate_to_token_based(piis, tokenization)
-        return tokenization, token_based_piis
-    else:
-        return piis
+    tokens = _tokenize(text)
+    _add_token_indices(piis, tokens)
+    return {"piis": piis, "tokens": tokens}
 
 
 def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:

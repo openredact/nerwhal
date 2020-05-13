@@ -5,7 +5,7 @@ def _tokenize(text):
     return [(token.text, token.whitespace_ == " ") for token in doc]
 
 
-def _translate_to_token_based(piis, tokenization):
+def _add_token_indices(piis, tokenization):
     pos_to_token_idx = {}
 
     pos = 0
@@ -19,7 +19,5 @@ def _translate_to_token_based(piis, tokenization):
             pos += 1
 
     for pii in piis:
-        pii.start = pos_to_token_idx[pii.start]
-        pii.end = pos_to_token_idx[pii.end - 1] + 1
-
-    return piis
+        pii.start_tok = pos_to_token_idx[pii.start_char]
+        pii.end_tok = pos_to_token_idx[pii.end_char - 1] + 1

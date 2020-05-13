@@ -50,7 +50,7 @@ def score_piis(piis, gold):
 
 
 def _to_start_end_tag_tuples(piis):
-    tuples = [(pii.start, pii.end, pii.tag) for pii in piis]
+    tuples = [(pii.start_char, pii.end_char, pii.tag) for pii in piis]
     return tuples
 
 

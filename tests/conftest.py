@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def embed():
     def function(text, piis):
-        """Replace the text passages identified as personal data with their type label.
+        """Replace the text passages identified as personal data with their tag.
 
         E.g. "My name is Han." will embed a PII for "Han" like this: "My name is PER."
 
@@ -14,7 +14,7 @@ def embed():
         """
 
         for pii in reversed(piis):
-            text = text[: pii.start] + pii.type + text[pii.end :]
+            text = text[: pii.start_char] + pii.tag + text[pii.end_char :]
         return text
 
     return function

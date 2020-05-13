@@ -10,7 +10,7 @@ def aggregate(piis, *other_piis, strategy="keep_all"):
     for _piis in other_piis:
         items.extend(_piis)
 
-    items.sort(key=lambda pii: (pii.start, pii.end, 1.0 - pii.score, pii.tag))
+    items.sort(key=lambda pii: (pii.start_char, pii.end_char, 1.0 - pii.score, pii.tag))
 
     if strategy == "keep_all":
         aggregated = items
@@ -30,15 +30,17 @@ def _ensure_disjointness_strategy(piis):
     """
     prev_pii_end = 0
     for pii in piis:
-        if prev_pii_end > pii.start:
-            raise AssertionError(f"All piis were assumed to be disjunct, but {pii.text} ({pii.start}-{pii.end}) wasn't")
+        if prev_pii_end > pii.start_char:
+            raise AssertionError(
+                f"All piis were assumed to be disjunct, but {pii.text} ({pii.start_char}-{pii.end_char}) wasn't"
+            )
 
-        prev_pii_end = pii.end
+        prev_pii_end = pii.end_char
     return piis
 
 
 def _overlapping(pii_a, pii_b):
-    return pii_a.start <= pii_b.start < pii_a.end or pii_a.start < pii_b.end <= pii_a.end
+    return pii_a.start_char <= pii_b.start_char < pii_a.end_char or pii_a.start_char < pii_b.end_char <= pii_a.end_char
 
 
 def _overlapping_and_outscored(pii, other_pii):
