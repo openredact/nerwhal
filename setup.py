@@ -4,6 +4,7 @@ setup(
     name="pii-identifier",
     version="0.1.0a",
     packages=["pii_identifier"],
+    include_package_data=True,
     license="MIT",
     description="Find personally identifiable information in German texts using NER and rule based matching.",
     long_description=open("README.md").read(),
