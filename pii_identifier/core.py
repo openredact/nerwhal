@@ -20,9 +20,9 @@ class Pii:
     start_char: int
     end_char: int
     tag: str
-    text: str
-    score: float  # the confidence that this text passage is a Pii of the stated tag
-    model: str
+    text: str = None
+    score: float = None  # the confidence that this text passage is a Pii of the stated tag
+    model: str = None
     start_tok: int = None
     end_tok: int = None
 
@@ -55,8 +55,12 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
     return {"piis": piis, "tokens": tokens}
 
 
-def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:
-    """Compute the scores of a list of found PIIs compared to the corresponding true PIIs."""
+def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:  # TODO rename piis
+    """Compute the scores of a list of found PIIs compared to the corresponding true PIIs.
+
+    Each Pii is required to have the fields `start_char`, `end_char` and `tag` populated. The remaining fields
+    are ignored.
+    """
     return score_piis(piis, gold)
 
 
