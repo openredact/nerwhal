@@ -6,7 +6,6 @@ setup(
     name="pii-identifier",
     version="0.1.0a",
     packages=find_packages(exclude=["tests"]),
-    package_data={"pii_identifier": ["pii_identifier/recognizers/data/*.csv"]},
     include_package_data=True,
     license="MIT",
     description="Find personally identifiable information in German texts using NER and rule based matching.",
