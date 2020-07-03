@@ -5,7 +5,5 @@ flair==0.4.5
 
 # Development dependencies
 pre-commit==2.2.0
-black==19.10b0
-flake8==3.7.9
 pytest==5.4.1
 pytest-cov==2.8.1
