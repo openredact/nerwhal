@@ -1,5 +1,7 @@
 # PII Identifier
 
+_**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
+
 A Python module that finds personally identifiable information in unstructured texts using NER and rule based matching.
 
 ---
@@ -87,3 +89,7 @@ To skip slow tests run:
 ```
 pytest --doctest-modules -m "not slow"
 ```
+
+## License
+
+MIT
