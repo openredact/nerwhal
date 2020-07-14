@@ -1,11 +1,9 @@
 from pii_identifier import find_piis, evaluate, Pii
-from pii_identifier.recognizers.email_recognizer import EmailRecognizer
-from pii_identifier.recognizers.spacy_statistical_recognizer import SpacyStatisticalRecognizer
 
 
 def test_find_piis(embed):
     text = "Han Solo und Wookiee Chewbacca wurden Freunde. Han's E-Mail ist han.solo@imperium.com."
-    recognizers = [EmailRecognizer, SpacyStatisticalRecognizer]
+    recognizers = ["EmailRecognizer", "SpacyStatisticalRecognizer"]
     aggregation_strategy = "merge"
     res = find_piis(text, recognizers=recognizers, aggregation_strategy=aggregation_strategy)
     assert embed(text, res["piis"]) == "PER und PER wurden Freunde. MISC ist EMAIL."

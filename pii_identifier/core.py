@@ -6,6 +6,7 @@ backend is used in `find_piis`.
 """
 
 from dataclasses import dataclass
+from importlib import import_module
 from typing import List
 
 import pii_identifier.backends
@@ -34,8 +35,10 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
     :param recognizers: a list of classes that implement the `Recognizer` interface
     :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
     """
+    recognizer_module = import_module("pii_identifier.recognizers")
     backends = {}
-    for recognizer_cls in recognizers:
+    for recognizer_name in recognizers:
+        recognizer_cls = getattr(recognizer_module, recognizer_name)
         recognizer = recognizer_cls()
         if recognizer.backend not in backends:
             # import backend modules only if they are used

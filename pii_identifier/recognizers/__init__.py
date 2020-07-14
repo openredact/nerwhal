@@ -4,4 +4,11 @@ from .email_recognizer import EmailRecognizer
 from .flair_statistical_recognizer import FlairStatisticalRecognizer
 from .spacy_statistical_recognizer import SpacyStatisticalRecognizer
 
-__all__ = (DePhoneNumberRecognizer, DeStateRecognizer, EmailRecognizer, FlairStatisticalRecognizer, SpacyStatisticalRecognizer)
+_recognizer_classes = (
+    DePhoneNumberRecognizer,
+    DeStateRecognizer,
+    EmailRecognizer,
+    FlairStatisticalRecognizer,
+    SpacyStatisticalRecognizer,
+)
+__all__ = [recognizer.__name__ for recognizer in _recognizer_classes]
