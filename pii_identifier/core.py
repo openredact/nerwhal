@@ -51,7 +51,10 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
     for backend in backends.values():
         results += (backend.run(text),)
 
-    piis = aggregate(*results, strategy=aggregation_strategy)
+    if len(results) == 0:
+        piis = []
+    else:
+        piis = aggregate(*results, strategy=aggregation_strategy)
 
     tokens = _tokenize(text)
     _add_token_indices(piis, tokens)
