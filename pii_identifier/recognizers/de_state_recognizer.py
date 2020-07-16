@@ -11,6 +11,8 @@ class DeStateRecognizer(SpacyEntityRulerRecognizer):
     The long form is also recognized in many declined forms.
     """
 
+    TAGS = ["GPE"]
+
     def __init__(self):
         one_word_states = set()
         multi_word_states = set()

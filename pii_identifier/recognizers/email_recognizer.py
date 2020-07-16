@@ -14,6 +14,8 @@ class EmailRecognizer(ReRecognizer):
     - special characters inside quoted strings
     """
 
+    TAGS = ["EMAIL"]
+
     @property
     def regexp(self):
         # TODO don't accept . as first character

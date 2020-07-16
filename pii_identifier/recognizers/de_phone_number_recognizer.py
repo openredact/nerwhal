@@ -23,6 +23,8 @@ class DePhoneNumberRecognizer(SpacyEntityRulerRecognizer):
     MAX_LEN_EXTENSION = 3
     MAX_LEN_BLOCK = 4  # the maximum length of space separated blocks (123456789 => 1234 5678 9)
 
+    TAGS = ["PHONE"]
+
     phone_patterns = [
         # >>> International numbers
         [  # Microsoft's canonical format, e.g. +49 (030) 12345
