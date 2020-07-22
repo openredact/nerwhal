@@ -1,4 +1,4 @@
-# PII Identifier
+# Nerwhal
 
 _**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
 
@@ -92,4 +92,4 @@ pytest --doctest-modules -m "not slow"
 
 ## License
 
-MIT
+[MIT License](https://github.com/openredact/nerwhal/blob/master/LICENSE)
