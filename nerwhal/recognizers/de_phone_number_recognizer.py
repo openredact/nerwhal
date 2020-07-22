@@ -1,4 +1,4 @@
-from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
+from nerwhal.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
 
 
 class DePhoneNumberRecognizer(SpacyEntityRulerRecognizer):

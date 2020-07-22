@@ -1,6 +1,6 @@
 import pytest
 
-from pii_identifier.recognizers import FlairStatisticalRecognizer
+from nerwhal.recognizers import FlairStatisticalRecognizer
 
 
 @pytest.mark.slow

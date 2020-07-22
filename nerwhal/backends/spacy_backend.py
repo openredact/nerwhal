@@ -2,10 +2,10 @@ import spacy
 from spacy.pipeline import EntityRuler
 from spacy.tokens import Span
 
-from pii_identifier import Pii
-from pii_identifier.backends.backend_base import NlpBackend
-from pii_identifier.recognizers import SpacyStatisticalRecognizer
-from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
+from nerwhal import Pii
+from nerwhal.backends.backend_base import NlpBackend
+from nerwhal.recognizers import SpacyStatisticalRecognizer
+from nerwhal.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
 
 MODEL = "de_core_news_sm"
 

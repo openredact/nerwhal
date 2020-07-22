@@ -6,8 +6,8 @@ A Python module that finds personally identifiable information in unstructured t
 
 ---
 
-![Tests](https://github.com/openredact/pii-identifier/workflows/Tests/badge.svg?branch=master)
-![Black & Flake8](https://github.com/openredact/pii-identifier/workflows/Black%20&%20Flake8/badge.svg?branch=master)
+![Tests](https://github.com/openredact/nerwhal/workflows/Tests/badge.svg?branch=master)
+![Black & Flake8](https://github.com/openredact/nerwhal/workflows/Black%20&%20Flake8/badge.svg?branch=master)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/ambv/black)
 
@@ -37,13 +37,13 @@ The recognizers are built on top of powerful NLP engines:
 - [flair](https://github.com/flairNLP/flair) for statistical NER
 - and of course the good ol' regular expressions
 
-The engines can be found in the [Backends Package](pii_identifier/backends). The recognizers operate on these backends
-and are located in the [Recognizers Package](pii_identifier/recognizers).
+The engines can be found in the [Backends Package](nerwhal/backends). The recognizers operate on these backends
+and are located in the [Recognizers Package](nerwhal/recognizers).
 
 ## Usage
 
 ```
-from pii_identifier import find_piis
+from nerwhal import find_piis
 
 piis = find_piis(your_text)
 ```
@@ -82,7 +82,7 @@ pre-commit run --all-files
 
 The tests can be executed with:
 ```
-pytest --cov-report term --cov=pii_identifier
+pytest --cov-report term --cov=nerwhal
 ```
 
 To skip slow tests run:

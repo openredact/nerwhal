@@ -1,4 +1,4 @@
-from pii_identifier import find_piis, evaluate, Pii
+from nerwhal import find_piis, evaluate, Pii
 
 
 def test_find_piis(embed):

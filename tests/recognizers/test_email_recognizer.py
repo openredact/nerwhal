@@ -1,6 +1,6 @@
 import pytest
 
-from pii_identifier.recognizers import EmailRecognizer
+from nerwhal.recognizers import EmailRecognizer
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 import pytest
 
-from pii_identifier.recognizers import DePhoneNumberRecognizer
+from nerwhal.recognizers import DePhoneNumberRecognizer
 
 
 @pytest.fixture

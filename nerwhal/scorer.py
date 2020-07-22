@@ -26,7 +26,7 @@ def score(candidates, gold):
 def score_piis(piis, gold):
     """Compute a range of scores for a list of piis compared to the true piis contained in the text.
 
-    :param piis: a list of piis, as returned by `pii_identifier.find_piis`
+    :param piis: a list of piis, as returned by `nerwhal.find_piis`
     :param gold: the true list of piis
     :return: a dictionary with the scores
     """

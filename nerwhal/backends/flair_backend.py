@@ -7,9 +7,9 @@ with warnings.catch_warnings():
     from flair.models import SequenceTagger
     from segtok.segmenter import split_single
 
-from pii_identifier import Pii  # noqa: E402
-from pii_identifier.backends.backend_base import NlpBackend  # noqa: E402
-from pii_identifier.recognizers.flair_statistical_recognizer import FlairStatisticalRecognizer  # noqa: E402
+from nerwhal import Pii  # noqa: E402
+from nerwhal.backends.backend_base import NlpBackend  # noqa: E402
+from nerwhal.recognizers.flair_statistical_recognizer import FlairStatisticalRecognizer  # noqa: E402
 
 MODEL = "de-ner-germeval"  # Germeval,  84.90 F1
 

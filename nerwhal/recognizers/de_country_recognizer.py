@@ -2,7 +2,7 @@ import csv
 import itertools
 from pathlib import Path
 
-from pii_identifier.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
+from nerwhal.recognizers._spacy_recognizer_base import SpacyEntityRulerRecognizer
 
 
 class DeCountryRecognizer(SpacyEntityRulerRecognizer):
@@ -63,7 +63,7 @@ class DeCountryRecognizer(SpacyEntityRulerRecognizer):
 
     def _get_variants(self, words):
         """Get the lemma. Mostly to be able to detect declinations of adjectives later on."""
-        from pii_identifier.backends.spacy_backend import nlp
+        from nerwhal.backends.spacy_backend import nlp
 
         result = ()
         for word in words.split():

@@ -1,6 +1,6 @@
 import pytest
 
-from pii_identifier.scorer import score
+from nerwhal.scorer import score
 
 
 def test_f1():

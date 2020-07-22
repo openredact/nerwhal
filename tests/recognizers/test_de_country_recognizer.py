@@ -1,6 +1,6 @@
 import pytest
 
-from pii_identifier.recognizers.de_country_recognizer import DeCountryRecognizer
+from nerwhal.recognizers.de_country_recognizer import DeCountryRecognizer
 
 
 @pytest.fixture

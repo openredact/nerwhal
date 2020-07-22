@@ -1,5 +1,5 @@
 def _tokenize(text):
-    from pii_identifier.backends.spacy_backend import nlp
+    from nerwhal.backends.spacy_backend import nlp
 
     doc = nlp(text)
 

@@ -1,7 +1,7 @@
 import re
 
-from pii_identifier import Pii
-from pii_identifier.backends.backend_base import NlpBackend
+from nerwhal import Pii
+from nerwhal.backends.backend_base import NlpBackend
 
 
 class ReBackend(NlpBackend):

@@ -1,7 +1,7 @@
 import pytest
 
-from pii_identifier import Pii
-from pii_identifier.aggregation_strategies import aggregate
+from nerwhal import Pii
+from nerwhal.aggregation_strategies import aggregate
 
 
 def test_aggregation():

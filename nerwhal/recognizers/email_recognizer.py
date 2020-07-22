@@ -1,4 +1,4 @@
-from pii_identifier.recognizers._re_recognizer_base import ReRecognizer
+from nerwhal.recognizers._re_recognizer_base import ReRecognizer
 
 
 class EmailRecognizer(ReRecognizer):

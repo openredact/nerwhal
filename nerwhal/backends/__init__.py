@@ -14,5 +14,5 @@ def load(backend):
     else:
         raise ValueError(f"Unknow backend type {backend}")
 
-    backend_cls = getattr(import_module(mod, package="pii_identifier.backends"), cls)
+    backend_cls = getattr(import_module(mod, package="nerwhal.backends"), cls)
     return backend_cls

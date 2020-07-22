@@ -1,5 +1,5 @@
 """
-This module implements the public API of the pii_identifier.
+This module implements the public API of the nerwhal.
 
 The machine learning models are loaded once they are used first. That will be when a recognizer based on the respective
 backend is used in `find_piis`.
@@ -9,11 +9,11 @@ from dataclasses import dataclass
 from importlib import import_module
 from typing import List
 
-import pii_identifier.backends
-from pii_identifier.aggregation_strategies import aggregate
-from pii_identifier.recognizers import __all__ as all_recognizers
-from pii_identifier.scorer import score_piis
-from pii_identifier.utils import _tokenize, _add_token_indices
+import nerwhal.backends
+from nerwhal.aggregation_strategies import aggregate
+from nerwhal.recognizers import __all__ as all_recognizers
+from nerwhal.scorer import score_piis
+from nerwhal.utils import _tokenize, _add_token_indices
 
 
 @dataclass
@@ -35,14 +35,14 @@ def find_piis(text: str, recognizers=all_recognizers, aggregation_strategy="keep
     :param recognizers: a list of classes that implement the `Recognizer` interface
     :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
     """
-    recognizer_module = import_module("pii_identifier.recognizers")
+    recognizer_module = import_module("nerwhal.recognizers")
     backends = {}
     for recognizer_name in recognizers:
         recognizer_cls = getattr(recognizer_module, recognizer_name)
         recognizer = recognizer_cls()
         if recognizer.backend not in backends:
             # import backend modules only if they are used
-            backend_cls = pii_identifier.backends.load(recognizer.backend)
+            backend_cls = nerwhal.backends.load(recognizer.backend)
             backends[recognizer.backend] = backend_cls()
 
         backends[recognizer.backend].register_recognizer(recognizer)
