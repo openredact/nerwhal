@@ -34,7 +34,6 @@ entities in the given text and that many indirect indicators as well as linkage 
 
 The recognizers are built on top of powerful NLP engines:
 - [spaCy](https://github.com/explosion/spaCy) for statistical NER and rule based matching on a token level
-- [flair](https://github.com/flairNLP/flair) for statistical NER
 - and of course the good ol' regular expressions
 
 The engines can be found in the [Backends Package](nerwhal/backends). The recognizers operate on these backends

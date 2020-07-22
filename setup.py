@@ -17,6 +17,5 @@ setup(
         #  prefer a solution with download on first usage, ideally to a folder shared by all venvs (e.g. ~/.spacy
         "de_core_news_sm@"
         "https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-2.2.5/de_core_news_sm-2.2.5.tar.gz",
-        "flair==0.4.5",
     ],
 )

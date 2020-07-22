@@ -5,9 +5,6 @@ def load(backend):
     if backend == "spacy":
         mod = ".spacy_backend"
         cls = "SpacyBackend"
-    elif backend == "flair":
-        mod = ".flair_backend"
-        cls = "FlairBackend"
     elif backend == "re":
         mod = ".re_backend"
         cls = "ReBackend"

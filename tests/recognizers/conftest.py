@@ -1,10 +1,9 @@
 import pytest
 
-from nerwhal.recognizers import FlairStatisticalRecognizer
 from nerwhal.recognizers import SpacyStatisticalRecognizer
 
 
-@pytest.fixture(params=[SpacyStatisticalRecognizer(), pytest.param(FlairStatisticalRecognizer(), marks=pytest.mark.slow)])
+@pytest.fixture(params=[SpacyStatisticalRecognizer()])
 def stat_recognizer(request):
     return request.param
 
@@ -21,10 +20,6 @@ def set_up_backend():
             from nerwhal.backends.re_backend import ReBackend
 
             backend = ReBackend()
-        elif recognizer.backend == "flair":
-            from nerwhal.backends.flair_backend import FlairBackend
-
-            backend = FlairBackend()
         else:
             raise ValueError(f"Unknown backend {recognizer.backend}")
 
