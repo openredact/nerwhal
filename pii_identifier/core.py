@@ -68,8 +68,3 @@ def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:  # TODO rename piis
     are ignored.
     """
     return score_piis(piis, gold)
-
-
-def tune(text: str, gold: List[Pii]):
-    """Improve the machine learning models with the provided examples."""
-    raise NotImplementedError
