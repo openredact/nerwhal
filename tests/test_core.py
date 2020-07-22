@@ -19,9 +19,9 @@ def test_evaluate():
     assert scores["total"]["true_positives"] == 3
     assert scores["total"]["false_positives"] == 1
     assert scores["total"]["false_negatives"] == 1
-    assert scores["PER"]["true_positives"] == 2
-    assert scores["PER"]["false_positives"] == 1
-    assert scores["PER"]["false_negatives"] == 0
-    assert scores["LOC"]["true_positives"] == 1
-    assert scores["LOC"]["false_positives"] == 0
-    assert scores["LOC"]["false_negatives"] == 1
+    assert scores["tags"]["PER"]["true_positives"] == 2
+    assert scores["tags"]["PER"]["false_positives"] == 1
+    assert scores["tags"]["PER"]["false_negatives"] == 0
+    assert scores["tags"]["LOC"]["true_positives"] == 1
+    assert scores["tags"]["LOC"]["false_positives"] == 0
+    assert scores["tags"]["LOC"]["false_negatives"] == 1
