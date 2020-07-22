@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Lint, format and test project" type="CompoundRunConfigurationType">
+    <toRun name="Pre-commit Hooks" type="PythonConfigurationType" />
+    <toRun name="Backend Tests" type="tests" />
+    <method v="2" />
+  </configuration>
+</component>
