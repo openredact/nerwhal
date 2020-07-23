@@ -4,7 +4,13 @@ def _tokenize(text):
     doc = nlp(text)
 
     return [
-        {"text": token.text, "has_ws": token.whitespace_ == " ", "start_char": token.idx, "end_char": token.idx + len(token)}
+        {
+            "text": token.text,
+            "has_ws": token.whitespace_ == " ",
+            "has_br": "\n" in token.text,
+            "start_char": token.idx,
+            "end_char": token.idx + len(token),
+        }
         for token in doc
     ]
 
