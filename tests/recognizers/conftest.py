@@ -12,11 +12,7 @@ def stat_recognizer(request):
 def set_up_backend():
     def function(recognizer):
         """Create a backend for the given recognizer and register the recognizer at it."""
-        if recognizer.backend == "spacy":
-            from nerwhal.backends.spacy_backend import SpacyBackend
-
-            backend = SpacyBackend()
-        elif recognizer.backend == "re":
+        if recognizer.backend == "re":
             from nerwhal.backends.re_backend import ReBackend
 
             backend = ReBackend()

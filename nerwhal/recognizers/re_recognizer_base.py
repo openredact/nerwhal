@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from nerwhal.recognizers._recognizer_base import Recognizer
+from nerwhal.recognizers.recognizer_base import Recognizer
 
 
 class ReRecognizer(Recognizer):
@@ -21,5 +21,5 @@ class ReRecognizer(Recognizer):
     @property
     @abstractmethod
     def precision(self):
-        """The estimated confidence that a match is of the respective entity."""
+        """The confidence that a match is of the respective entity."""
         pass

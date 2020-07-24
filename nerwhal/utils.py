@@ -1,12 +1,6 @@
 def _tokenize(text):
-    from nerwhal.backends.spacy_backend import nlp
 
-    doc = nlp(text)
-
-    return [
-        {"text": token.text, "has_ws": token.whitespace_ == " ", "start_char": token.idx, "end_char": token.idx + len(token)}
-        for token in doc
-    ]
+    return []
 
 
 def _add_token_indices(piis, tokenization):

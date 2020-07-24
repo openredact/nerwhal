@@ -1,11 +1,11 @@
-from nerwhal import find_piis, evaluate, Pii
+from nerwhal import recognize, evaluate, Pii
 
 
 def test_find_piis(embed):
     text = "Han Solo und Wookiee Chewbacca wurden Freunde. Han's E-Mail ist han.solo@imperium.com."
     recognizers = ["EmailRecognizer", "SpacyStatisticalRecognizer"]
     aggregation_strategy = "merge"
-    res = find_piis(text, recognizers=recognizers, aggregation_strategy=aggregation_strategy)
+    res = recognize(text, recognizers=recognizers, aggregation_strategy=aggregation_strategy)
     assert embed(text, res["piis"]) == "PER und PER wurden Freunde. MISC ist EMAIL."
 
 

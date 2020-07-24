@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from nerwhal.recognizers._recognizer_base import Recognizer
+from nerwhal.recognizers.recognizer_base import Recognizer
 
 
 class SpacyEntityRulerRecognizer(Recognizer):

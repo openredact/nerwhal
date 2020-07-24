@@ -1,7 +1,7 @@
 import re
 
 from nerwhal import Pii
-from nerwhal.backends.backend_base import NlpBackend
+from nerwhal.backends.base import NlpBackend
 
 
 class ReBackend(NlpBackend):
@@ -16,6 +16,6 @@ class ReBackend(NlpBackend):
         for recognizer in self.recognizers:
             entity = recognizer.entity
             score = recognizer.precision
-            pattern = re.compile(recognizer.regexp, flags=re.MULTILINE | re.VERBOSE)
+            pattern = re.compile(recognizer.regexp, flags=re.MULTILINE | re.VERBOSE)  # TODO move flags into recognizer
             piis += [Pii(m.start(), m.end(), entity, m.group(), score, "re") for m in pattern.finditer(text)]
         return piis
