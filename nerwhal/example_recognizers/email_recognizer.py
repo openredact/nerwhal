@@ -1,4 +1,4 @@
-from nerwhal.recognizers.re_recognizer_base import ReRecognizer
+from nerwhal.recognizer_bases.re_recognizer import ReRecognizer
 
 
 class EmailRecognizer(ReRecognizer):

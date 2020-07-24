@@ -6,9 +6,11 @@ from spacy.tokens import Span
 from spacy_stanza import StanzaLanguage
 
 # from nerwhal.core import Pii
-from nerwhal.backends.base import NlpBackend
+from nerwhal.backends.base import Backend
 
 # configure spacy objects and language pipeline
+from nerwhal.recognizer_bases.spacy_pipe_components import SpacyEntityRulerRecognizer
+
 if not Span.has_extension("precision"):
     Span.set_extension("precision", default=-1.0)
 if not Span.has_extension("model"):
@@ -45,7 +47,7 @@ class Pii:
 # nlp.add_pipe(label_ents(nlp.meta["accuracy"]["ents_p"] / 100, "spacy_" + MODEL), name="label_ner_ents", after="ner")
 
 
-class SpacyPipeline(NlpBackend):
+class SpacyBackend(Backend):
     def __init__(self, stanza_model):
         stanza.download(stanza_model, processors="tokenize,mwt,ner")
 
@@ -75,4 +77,8 @@ class SpacyPipeline(NlpBackend):
         )
 
     def register_recognizer(self, recognizer):
-        self.ruler.add_patterns(recognizer.rules)
+        if isinstance(recognizer, SpacyEntityRulerRecognizer):
+            rules = [{"label": recognizer.entity, "pattern": pattern} for pattern in recognizer.patterns]
+            self.ruler.add_patterns(rules)
+        else:
+            raise ValueError(f"Unknown recognizer type {type(recognizer)} for spaCy backend")

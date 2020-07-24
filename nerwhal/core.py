@@ -4,22 +4,23 @@ This module implements the public API of the nerwhal.
 The machine learning models are loaded once they are used first. That will be when a recognizer based on the respective
 backend is used in `find_piis`.
 """
-
+import importlib.util
+import os
+from collections import OrderedDict
 from dataclasses import dataclass
-from importlib import import_module
 from multiprocessing import Pipe
 from multiprocessing.context import Process
 from typing import List
 
 import nerwhal.backends
 from nerwhal.aggregation_strategies import aggregate
+from nerwhal.backends.spacy_backend import SpacyBackend
 from nerwhal.scorer import score_piis
-from nerwhal.spacy_pipeline import SpacyPipeline
 from nerwhal.utils import _add_token_indices
 
 
 @dataclass
-class Pii:
+class Pii:  # rename to NamedEntity
     start_char: int
     end_char: int
     tag: str
@@ -34,13 +35,13 @@ class Pii:
 class Config:
     model_name: str
     recognizer_paths: List[str]
+    load_examples: bool = False
 
 
 class Core:
     def __init__(self):
         self.config = None
-        self.pipeline = None
-        self.backends = {}
+        self.backends = OrderedDict()
 
     def load_config_if_changed(self, config):
         if config == self.config:
@@ -48,33 +49,42 @@ class Core:
 
         self.config = config
 
-        self.pipeline = SpacyPipeline(config.model_name)
+        pipeline = SpacyBackend(self.config.model_name)
+        self.backends = {"spacy": pipeline}
 
-        backends = {}
-        for recognizer_path in config.recognizer_paths:
-            recognizer_module = import_module("nerwhal.recognizers")
-            recognizer_cls = getattr(recognizer_module, recognizer_path)
+        if self.config.load_examples:
+            for file in os.listdir("nerwhal/example_recognizers"):
+                if file.endswith("_recognizer.py"):
+                    example = os.path.join("nerwhal/example_recognizers", file)
+                    if example not in self.config.recognizer_paths:
+                        self.config.recognizer_paths.append(example)
+
+        for recognizer_path in self.config.recognizer_paths:
+            if not os.path.isfile(recognizer_path):
+                raise ValueError(f"Configured recognizer {recognizer_path} is not a file")
+
+            module_name = os.path.splitext(os.path.basename(recognizer_path))[0]
+            spec = importlib.util.spec_from_file_location(module_name, recognizer_path)
+            module = importlib.util.module_from_spec(spec)
+            class_name = "".join(word.title() for word in module_name.split("_"))
+            spec.loader.exec_module(module)
+
+            recognizer_cls = getattr(module, class_name)
             recognizer = recognizer_cls()
-            if recognizer.backend not in backends.keys():
+            if recognizer.backend not in self.backends.keys():
                 # import backend modules only if they are used
-                if recognizer.backend in ["re", "flashtext"]:
-                    backend_cls = nerwhal.backends.load(recognizer.backend)
-                    backends[recognizer.backend] = backend_cls()
+                backend_cls = nerwhal.backends.load(recognizer.backend)
+                self.backends[recognizer.backend] = backend_cls()
 
-            if recognizer.backend in ["re", "flashtext"]:
-                backends[recognizer.backend].register_recognizer(recognizer)
-            elif recognizer.backend == "entity-ruler":
-                self.pipeline.register_recognizer(recognizer)
+            self.backends[recognizer.backend].register_recognizer(recognizer)
 
     def run_recognition(self, text):
-        runnables = [self.pipeline] + list(self.backends.values())
-
         def target(func, arg, pipe_end):
             pipe_end.send(func(arg))
 
         jobs = []
         pipe_conns = []
-        for r in runnables:
+        for r in self.backends.values():
             recv_end, send_end = Pipe(False)
             proc = Process(target=target, args=(r.run, text, send_end))
             jobs.append(proc)

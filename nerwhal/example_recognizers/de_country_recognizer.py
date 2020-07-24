@@ -2,7 +2,7 @@ import csv
 import itertools
 from pathlib import Path
 
-from nerwhal.recognizers.spacy_recognizer_base import SpacyEntityRulerRecognizer
+from nerwhal.recognizer_bases.spacy_pipe_components import SpacyEntityRulerRecognizer
 
 
 class DeCountryRecognizer(SpacyEntityRulerRecognizer):

@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.recognizers import DePhoneNumberRecognizer
+from nerwhal.example_recognizers import DePhoneNumberRecognizer
 
 
 @pytest.fixture

@@ -1,21 +1,22 @@
 import re
 
 from nerwhal import Pii
-from nerwhal.backends.base import NlpBackend
+from nerwhal.backends.base import Backend
 
 
-class ReBackend(NlpBackend):
+class ReBackend(Backend):
     def __init__(self):
-        self.recognizers = []
+        self.compiled_regexps = []
+        self.entities = []
+        self.precisions = []
 
     def register_recognizer(self, recognizer):
-        self.recognizers += [recognizer]
+        self.compiled_regexps += [re.compile(recognizer.regexp, flags=recognizer.flags)]
+        self.entities.append(recognizer.entity)
+        self.precisions.append(recognizer.precision)
 
     def run(self, text):
         piis = []
-        for recognizer in self.recognizers:
-            entity = recognizer.entity
-            score = recognizer.precision
-            pattern = re.compile(recognizer.regexp, flags=re.MULTILINE | re.VERBOSE)  # TODO move flags into recognizer
-            piis += [Pii(m.start(), m.end(), entity, m.group(), score, "re") for m in pattern.finditer(text)]
+        for pattern, entity, precision in zip(self.compiled_regexps, self.entities, self.precisions):
+            piis += [Pii(m.start(), m.end(), entity, m.group(), precision, "re") for m in pattern.finditer(text)]
         return piis

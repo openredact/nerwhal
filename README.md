@@ -41,10 +41,12 @@ and are located in the [Recognizers Package](nerwhal/recognizers).
 
 ## Usage
 
-```
-from nerwhal import find_piis
+```python
+from nerwhal import recognize, Config
 
-piis = find_piis(your_text)
+config = Config("de", ["nerwhal/example_recognizers/email_recognizer.py"])
+
+recognize("Ich heiße Luke und meine E-Mail ist luke@skywalker.com.", config=config)
 ```
 
 ## Development

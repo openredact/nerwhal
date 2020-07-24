@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-class NlpBackend(ABC):
-    """NlpBackend are the engines behind the recognizers that drive the search for PIIs.
+class Backend(ABC):
+    """Backends are the engines behind the recognizers that drive the search for PIIs.
 
     Recognizers use the functionality provided by a backend to do their job. Each recognizer has to specify one backend
     that it operates on.

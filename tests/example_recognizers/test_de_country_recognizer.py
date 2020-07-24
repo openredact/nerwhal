@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.recognizers.de_country_recognizer import DeCountryRecognizer
+from nerwhal.example_recognizers.de_country_recognizer import DeCountryRecognizer
 
 
 @pytest.fixture
