@@ -25,8 +25,7 @@ class EmailRecognizer(ReRecognizer):
 
     @property
     def regexp(self):
-        # TODO don't accept . as first character
-        # TODO should we enforce a space or other character before the e-mail? how to handle e.g. a@b@c@example.com
-        return r"""([a-zA-Z0-9!#$%&'*+-/=?^_`{|}~\.]+)  # local part
+        return r""" [a-zA-Z0-9!#$%&'"*+\-/=?^_`{|}~]  # the first character cannot be a .
+                   ([a-zA-Z0-9!#$%&'"*+\-/=?^_`{|}~\.]*)  # local part
                    @
-                   ((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}  # domain part)"""
+                   ((?!-)[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}  # domain part)"""

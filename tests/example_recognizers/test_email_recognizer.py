@@ -75,3 +75,9 @@ def test_no_at_character(backend, embed):
     text = "Meine E-Mail Adresse ist test.example.com."
     ents = backend.run(text)
     assert len(ents) == 0
+
+
+def test_cannot_start_with_dot(backend, embed):
+    text = "...mail@example.com..."
+    ents = backend.run(text)
+    assert embed(text, ents) == "...EMAIL..."
