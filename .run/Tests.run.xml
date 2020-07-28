@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend Tests" type="tests" factoryName="py.test">
+  <configuration default="false" name="Tests" type="tests" factoryName="py.test">
     <module name="nerwhal" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />

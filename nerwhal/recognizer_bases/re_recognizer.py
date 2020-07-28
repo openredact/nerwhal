@@ -1,17 +1,15 @@
-import re
 from abc import abstractmethod
 
-from nerwhal.recognizer_bases import Recognizer
+from .base import Recognizer
 
 
 class ReRecognizer(Recognizer):
-    @property
-    def backend(self):
-        return "re"
+    BACKEND = "re"
 
     @property
+    @abstractmethod
     def flags(self):
-        return re.MULTILINE | re.VERBOSE
+        pass
 
     @property
     @abstractmethod

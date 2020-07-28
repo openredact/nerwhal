@@ -1,3 +1,5 @@
+import re
+
 from nerwhal.recognizer_bases.re_recognizer import ReRecognizer
 
 
@@ -14,7 +16,12 @@ class EmailRecognizer(ReRecognizer):
     - special characters inside quoted strings
     """
 
-    TAGS = ["EMAIL"]
+    TAG = "EMAIL"
+    SCORE = 0.95
+
+    @property
+    def flags(self):
+        return re.MULTILINE | re.VERBOSE
 
     @property
     def regexp(self):
@@ -23,11 +30,3 @@ class EmailRecognizer(ReRecognizer):
         return r"""([a-zA-Z0-9!#$%&'*+-/=?^_`{|}~\.]+)  # local part
                    @
                    ((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}  # domain part)"""
-
-    @property
-    def entity(self):
-        return "EMAIL"
-
-    @property
-    def precision(self):
-        return 1.0

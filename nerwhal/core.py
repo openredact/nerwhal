@@ -1,100 +1,79 @@
-"""
-This module implements the public API of the nerwhal.
-
-The machine learning models are loaded once they are used first. That will be when a recognizer based on the respective
-backend is used in `find_piis`.
-"""
 import importlib.util
 import os
 from collections import OrderedDict
-from dataclasses import dataclass
 from multiprocessing import Pipe
 from multiprocessing.context import Process
 from typing import List
 
 import nerwhal.backends
 from nerwhal.aggregation_strategies import aggregate
-from nerwhal.backends.spacy_backend import SpacyBackend
-from nerwhal.scorer import score_piis
+from nerwhal.pipeline import Pipeline
+from nerwhal.scorer import score_entities
+from nerwhal.types import Config, NamedEntity
 from nerwhal.utils import _add_token_indices
 
-
-@dataclass
-class Pii:  # rename to NamedEntity
-    start_char: int
-    end_char: int
-    tag: str
-    text: str = None
-    score: float = None  # TODO what as metric
-    model: str = None
-    start_tok: int = None
-    end_tok: int = None
-
-
-@dataclass
-class Config:
-    model_name: str
-    recognizer_paths: List[str]
-    load_examples: bool = False
+EXAMPLE_RECOGNIZERS_PATH = "nerwhal/example_recognizers"
 
 
 class Core:
     def __init__(self):
         self.config = None
         self.backends = OrderedDict()
+        self.pipeline = None
 
-    def load_config_if_changed(self, config):
+    def update_config(self, config):
         if config == self.config:
             return
 
         self.config = config
 
-        pipeline = SpacyBackend(self.config.model_name)
-        self.backends = {"spacy": pipeline}
+        # The pipeline takes a special role:
+        # - additionally to entities it also returns the tokenization
+        # - it provides the nlp method that can be used by recognizers
+        # - still it shares the interface with other backends such that they can be run in parallel
+        self.pipeline = Pipeline(self.config.model_name)
+        self.backends = {"spacy": self.pipeline}
 
         if self.config.load_examples:
-            for file in os.listdir("nerwhal/example_recognizers"):
-                if file.endswith("_recognizer.py"):
-                    example = os.path.join("nerwhal/example_recognizers", file)
-                    if example not in self.config.recognizer_paths:
-                        self.config.recognizer_paths.append(example)
+            self._add_examples_to_config_recognizer_paths()
 
         for recognizer_path in self.config.recognizer_paths:
             if not os.path.isfile(recognizer_path):
                 raise ValueError(f"Configured recognizer {recognizer_path} is not a file")
 
-            module_name = os.path.splitext(os.path.basename(recognizer_path))[0]
-            spec = importlib.util.spec_from_file_location(module_name, recognizer_path)
-            module = importlib.util.module_from_spec(spec)
-            class_name = "".join(word.title() for word in module_name.split("_"))
-            spec.loader.exec_module(module)
+            recognizer_cls = self._load_class(recognizer_path)
 
-            recognizer_cls = getattr(module, class_name)
-            recognizer = recognizer_cls()
-            if recognizer.backend not in self.backends.keys():
-                # import backend modules only if they are used
-                backend_cls = nerwhal.backends.load(recognizer.backend)
-                self.backends[recognizer.backend] = backend_cls()
+            # import only the backend modules that are configured
+            if recognizer_cls.BACKEND not in self.backends.keys():
+                backend_cls = nerwhal.backends.load(recognizer_cls.BACKEND)
 
-            self.backends[recognizer.backend].register_recognizer(recognizer)
+                if recognizer_cls.BACKEND == "entity_ruler":
+                    backend_inst = backend_cls(self.config.model_name)
+                else:
+                    backend_inst = backend_cls()
+
+                self.backends[recognizer_cls.BACKEND] = backend_inst
+
+            self.backends[recognizer_cls.BACKEND].register_recognizer(recognizer_cls)
+
+    def _load_class(self, recognizer_path):
+        module_name = os.path.splitext(os.path.basename(recognizer_path))[0]
+        spec = importlib.util.spec_from_file_location(module_name, recognizer_path)
+        module = importlib.util.module_from_spec(spec)
+        class_name = "".join(word.title() for word in module_name.split("_"))
+        spec.loader.exec_module(module)
+        recognizer_cls = getattr(module, class_name)
+        return recognizer_cls
+
+    def _add_examples_to_config_recognizer_paths(self):
+        for file in os.listdir(EXAMPLE_RECOGNIZERS_PATH):
+            if file.endswith("_recognizer.py"):
+                example = os.path.join(EXAMPLE_RECOGNIZERS_PATH, file)
+                if example not in self.config.recognizer_paths:
+                    self.config.recognizer_paths.append(example)
 
     def run_recognition(self, text):
-        def target(func, arg, pipe_end):
-            pipe_end.send(func(arg))
-
-        jobs = []
-        pipe_conns = []
-        for r in self.backends.values():
-            recv_end, send_end = Pipe(False)
-            proc = Process(target=target, args=(r.run, text, send_end))
-            jobs.append(proc)
-            pipe_conns.append(recv_end)
-            proc.start()
-
-        for proc in jobs:
-            proc.join()
-
-        results = [conn.recv() for conn in pipe_conns]
+        results = self._run_in_parallel(self.backends.values(), text)
 
         ents, tokens = results[0]  # pipeline additionally returns tokens
         list_of_ent_lists = [ents]
@@ -103,33 +82,60 @@ class Core:
 
         return list_of_ent_lists, tokens
 
+    def _run_in_parallel(self, backends, text):
+        def target(func, arg, pipe_end):
+            pipe_end.send(func(arg))
+
+        jobs = []
+        pipe_conns = []
+        for backend in backends:
+            recv_end, send_end = Pipe(False)
+            proc = Process(target=target, args=(backend.run, text, send_end))
+            jobs.append(proc)
+            pipe_conns.append(recv_end)
+            proc.start()
+        for proc in jobs:
+            proc.join()
+        results = [conn.recv() for conn in pipe_conns]
+        return results
+
+    @property
+    def nlp(self):
+        if self.pipeline is None:
+            raise RuntimeError("The nlp property is only available once the config has been loaded.")
+        return self.pipeline.nlp
+
 
 core = Core()
 
 
-def recognize(text: str, config: Config, aggregation_strategy="keep_all") -> dict:
+def recognize(text: str, config: Config, aggregation_strategy="keep_all", return_tokens=True) -> dict:
     """Find personally identifiable data in the given text and return it.
 
+    :param return_tokens:
+    :param config:
     :param text:
-    :param recognizers: a list of classes that implement the `Recognizer` interface
     :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
     """
-    core.load_config_if_changed(config)
+    core.update_config(config)
     results, tokens = core.run_recognition(text)
 
     if len(results) == 0:
-        piis = []
+        ents = []
     else:
-        piis = aggregate(*results, strategy=aggregation_strategy)
+        ents = aggregate(*results, strategy=aggregation_strategy)
 
-    _add_token_indices(piis, tokens)
-    return {"piis": piis, "tokens": tokens}
+    _add_token_indices(ents, tokens)
+    result = {"ents": ents}
+    if return_tokens:
+        result["tokens"] = tokens
+    return result
 
 
-def evaluate(piis: List[Pii], gold: List[Pii]) -> dict:  # TODO rename piis
-    """Compute the scores of a list of found PIIs compared to the corresponding true PIIs.
+def evaluate(ents: List[NamedEntity], gold: List[NamedEntity]) -> dict:
+    """Compute the scores of a list of recognized named entities compared to the corresponding true entities.
 
-    Each Pii is required to have the fields `start_char`, `end_char` and `tag` populated. The remaining fields
+    Each named entity is required to have the fields `start_char`, `end_char` and `tag` populated. The remaining fields
     are ignored.
     """
-    return score_piis(piis, gold)
+    return score_entities(ents, gold)

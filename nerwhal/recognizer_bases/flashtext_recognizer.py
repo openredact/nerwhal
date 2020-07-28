@@ -1,12 +1,10 @@
 from abc import abstractmethod
 
-from nerwhal.recognizer_bases import Recognizer
+from .base import Recognizer
 
 
 class FlashtextRecognizer(Recognizer):
-    @property
-    def backend(self):
-        return "flashtext"
+    BACKEND = "flashtext"
 
     @property
     @abstractmethod

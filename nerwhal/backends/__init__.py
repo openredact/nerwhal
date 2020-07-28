@@ -8,6 +8,9 @@ def load(backend):
     elif backend == "flashtext":
         mod = ".flashtext_backend"
         cls = "FlashtextBackend"
+    elif backend == "entity-ruler":
+        mod = ".entity_ruler_backend"
+        cls = "EntityRulerBackend"
     else:
         raise ValueError(f"Unknown backend type {backend}")
 

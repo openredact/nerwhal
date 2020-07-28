@@ -1,25 +1,24 @@
 import pytest
 
-from nerwhal.recognizers import SpacyStatisticalRecognizer
 
-
-@pytest.fixture(params=[SpacyStatisticalRecognizer()])
-def stat_recognizer(request):
-    return request.param
-
-
-@pytest.fixture
-def set_up_backend():
-    def function(recognizer):
+@pytest.fixture(scope="session")
+def setup_backend():
+    def function(backend: str, **kwargs):
         """Create a backend for the given recognizer and register the recognizer at it."""
-        if recognizer.backend == "re":
+        if backend == "re":
             from nerwhal.backends.re_backend import ReBackend
 
             backend = ReBackend()
-        else:
-            raise ValueError(f"Unknown backend {recognizer.backend}")
+        elif backend == "flashtext":
+            from nerwhal.backends.flashtext_backend import FlashtextBackend
 
-        backend.register_recognizer(recognizer)
+            backend = FlashtextBackend()
+        elif backend == "entity-ruler":
+            from nerwhal.backends.entity_ruler_backend import EntityRulerBackend
+
+            backend = EntityRulerBackend(**kwargs)
+        else:
+            raise ValueError(f"Unknown backend {backend}")
         return backend
 
     return function

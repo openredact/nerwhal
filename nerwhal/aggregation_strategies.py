@@ -1,16 +1,16 @@
-def aggregate(piis, *other_piis, strategy="keep_all"):
-    """Aggregate two or more lists of Piis.
+def aggregate(ents, *other_ents, strategy="keep_all"):
+    """Aggregate two or more lists of named entities.
 
-    You can choose from several strategies for how to deal with overlapping Piis.
-    - `keep_all`: Append all lists and keep all Piis.
-    - `ensure_disjointness`: Like `keep_all`, but raises an `AssertionError` if two Piis overlap.
-    - `merge`: Appends the lists while choosing the Pii with higher score on overlaps.
+    You can choose from several strategies for how to deal with overlapping entities.
+    - `keep_all`: Append all lists and keep all entities.
+    - `ensure_disjointness`: Like `keep_all`, but raises an `AssertionError` if two entities overlap.
+    - `merge`: Appends the lists while choosing the entity with higher score on overlaps.
     """
-    items = piis.copy()
-    for _piis in other_piis:
-        items.extend(_piis)
+    items = ents.copy()
+    for _ents in other_ents:
+        items.extend(_ents)
 
-    items.sort(key=lambda pii: (pii.start_char, pii.end_char, 1.0 - pii.score, pii.tag))
+    items.sort(key=lambda ent: (ent.start_char, ent.end_char, 1.0 - ent.score, ent.tag))
 
     if strategy == "keep_all":
         aggregated = items
@@ -23,43 +23,43 @@ def aggregate(piis, *other_piis, strategy="keep_all"):
     return aggregated
 
 
-def _ensure_disjointness_strategy(piis):
-    """A strategy that ensures that all PIIs are disjoint.
+def _ensure_disjointness_strategy(ents):
+    """A strategy that ensures that all entities are disjoint.
 
-    Checks that all piis are disjoint by comparing end of previous pii with start of the current one.
+    Checks that all entities are disjoint by comparing end of previous entity with start of the current one.
     """
-    prev_pii_end = 0
-    for pii in piis:
-        if prev_pii_end > pii.start_char:
+    prev_ent_end = 0
+    for ent in ents:
+        if prev_ent_end > ent.start_char:
             raise AssertionError(
-                f"All piis were assumed to be disjunct, but {pii.text} ({pii.start_char}-{pii.end_char}) wasn't"
+                f"All entities were assumed to be disjunct, but {ent.text} ({ent.start_char}-{ent.end_char}) wasn't"
             )
 
-        prev_pii_end = pii.end_char
-    return piis
+        prev_ent_end = ent.end_char
+    return ents
 
 
-def _overlapping(pii_a, pii_b):
-    return pii_a.start_char <= pii_b.start_char < pii_a.end_char or pii_a.start_char < pii_b.end_char <= pii_a.end_char
+def _overlapping(ent_a, ent_b):
+    return ent_a.start_char <= ent_b.start_char < ent_a.end_char or ent_a.start_char < ent_b.end_char <= ent_a.end_char
 
 
-def _overlapping_and_outscored(pii, other_pii):
-    return other_pii and _overlapping(pii, other_pii) and pii.score < other_pii.score
+def _overlapping_and_outscored(ent, other_ent):
+    return other_ent and _overlapping(ent, other_ent) and ent.score < other_ent.score
 
 
-def _merge_strategy(piis):
-    """A strategy to resolve overlapping PIIs by giving those with higher scores priority."""
+def _merge_strategy(ents):
+    """A strategy to resolve overlapping named entities by giving those with higher scores priority."""
     res = []
-    prev_pii = None
-    for idx, pii in enumerate(piis):
-        next_pii = piis[idx + 1] if idx + 1 < len(piis) else None
+    prev_ent = None
+    for idx, ent in enumerate(ents):
+        next_ent = ents[idx + 1] if idx + 1 < len(ents) else None
 
-        if _overlapping_and_outscored(pii, prev_pii) or _overlapping_and_outscored(pii, next_pii):
+        if _overlapping_and_outscored(ent, prev_ent) or _overlapping_and_outscored(ent, next_ent):
             # don't add this one
             continue
 
-        res += [pii]
+        res += [ent]
 
-        prev_pii = pii
+        prev_ent = ent
 
     return res

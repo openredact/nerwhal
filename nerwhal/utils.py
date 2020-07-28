@@ -1,9 +1,4 @@
-def _tokenize(text):
-
-    return []
-
-
-def _add_token_indices(piis, tokenization):
+def _add_token_indices(ents, tokenization):
     pos_to_token_idx = {}
 
     pos = 0
@@ -16,6 +11,6 @@ def _add_token_indices(piis, tokenization):
         if token["has_ws"]:
             pos += 1
 
-    for pii in piis:
-        pii.start_tok = pos_to_token_idx[pii.start_char]
-        pii.end_tok = pos_to_token_idx[pii.end_char - 1] + 1
+    for ent in ents:
+        ent.start_tok = pos_to_token_idx[ent.start_char]
+        ent.end_tok = pos_to_token_idx[ent.end_char - 1] + 1

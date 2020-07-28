@@ -2,40 +2,40 @@ import csv
 import itertools
 from pathlib import Path
 
-from nerwhal.recognizer_bases.spacy_pipe_components import SpacyEntityRulerRecognizer
+from nerwhal.recognizer_bases.entity_ruler_recognizer import EntityRulerRecognizer
 
 
-class DeCountryRecognizer(SpacyEntityRulerRecognizer):
+class DeCountryRecognizer(EntityRulerRecognizer):
     """Recognize German country names in short and long form.
 
     The long form is also recognized in many declined forms.
     """
 
-    TAGS = ["GPE"]
+    TAG = "LOC"
+    SCORE = 0.95
 
-    def __init__(self):
-        one_word_countries = set()
-        multi_word_countries = set()
+    def __init__(self, nlp):
+        super().__init__(nlp)
+
+        one_word_countries = []
+        multi_word_countries = []
 
         for row in self._read_data():
             for name in row:
                 if len(name.split()) == 1:
-                    one_word_countries.add(name)
+                    # e.g. "Deutschland"
+                    one_word_countries.append(name)
                 else:
-                    multi_word_countries.add(name)
+                    # e.g. "Bundesrepublik Deutschland"
+                    multi_word_countries.append(name)
 
-        # [{"label": "GPE", "pattern": "Deutschland"}, ...]
-        one_word_rules = self._create_rules(one_word_countries, "GPE")
-
+        # e.g. [{"LEMMA": "Bundesrepublik"}, {"LEMMA": "Deutschland"}]
         multi_word_patterns = self._compute_multi_word_patterns(multi_word_countries)
-        # [{"label": "GPE", "pattern": [{"LEMMA": "Bundesrepublik"}, {"LEMMA": "Deutschland"}]}, ...]
-        multi_word_rules = self._create_rules(multi_word_patterns, "GPE")
-
-        self.country_rules = one_word_rules + multi_word_rules
+        self.country_patterns = list(one_word_countries) + multi_word_patterns
 
     @property
-    def rules(self):
-        return self.country_rules
+    def patterns(self):
+        return self.country_patterns
 
     def _read_data(self):
         path = Path(__file__).parent / "data" / "countries.csv"
@@ -59,18 +59,17 @@ class DeCountryRecognizer(SpacyEntityRulerRecognizer):
 
             for variant in country_name_variants:
                 multi_word_country_patterns.append([{"LEMMA": sub} for sub in variant])
+        print(multi_word_country_patterns)
         return multi_word_country_patterns
 
     def _get_variants(self, words):
-        """Get the lemma. Mostly to be able to detect declinations of adjectives later on."""
-        from nerwhal.backends.spacy_backend import nlp
-
+        """Get the lemmas to be able to detect declinations and other variants of country names."""
         result = ()
         for word in words.split():
             # we want word itself to be a variant of word
             variants = [word]
 
-            lemma = nlp(word)[0].lemma_
+            lemma = self.nlp(word)[0].lemma_
             if lemma != word:
                 # the lemma is a version, too
                 variants.append(lemma)
