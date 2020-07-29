@@ -1,12 +1,12 @@
 import pytest
 
-from nerwhal.example_recognizers.de_country_recognizer import DeCountryRecognizer
+from nerwhal.example_recognizers.de.de_country_recognizer import DeCountryRecognizer
 
 
 @pytest.fixture(scope="module")
 def backend(setup_backend):
     recognizer = DeCountryRecognizer
-    backend = setup_backend(recognizer.BACKEND, model_name="de")
+    backend = setup_backend(recognizer.BACKEND)
     backend.register_recognizer(recognizer)
     return backend
 

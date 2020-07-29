@@ -15,7 +15,7 @@ class EntityRulerBackend(Backend):
         self.nlp = load_nlp(model_name, "tokenize,pos,lemma")
 
     def register_recognizer(self, recognizer_cls: Type[EntityRulerRecognizer]):
-        recognizer = recognizer_cls(self.nlp)
+        recognizer = recognizer_cls()
 
         name = recognizer_cls.__name__
         ruler = EntityRuler(self.nlp)
