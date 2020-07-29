@@ -22,7 +22,7 @@ class EmailRecognizer(ReRecognizer):
 
     @property
     def regexp(self):
-        return r""" [a-zA-Z0-9!#$%&'"*+\-/=?^_`{|}~]  # the first character cannot be a .
-                   ([a-zA-Z0-9!#$%&'"*+\-/=?^_`{|}~\.]*)  # local part
+        return r"""[a-zA-Z0-9!#$%&'"*+\-/=?^_`{|}~]  # the first character cannot be a dot
+                   [a-zA-Z0-9!#$%&'"*+\-/=?^_`{|}~\.]*  # local part
                    @
-                   ((?!-)[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}  # domain part)"""
+                   ((?!-)[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}  # domain part"""
