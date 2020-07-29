@@ -3,7 +3,7 @@ from nerwhal import recognize, evaluate, NamedEntity, Config
 
 def test_recognize(embed):
     text = "Han Solo und Wookiee Chewbacca wurden Freunde. Die E-Mail von Han ist han.solo@imperium.com."
-    config = Config("de", recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
+    config = Config("de", use_statistical_ner=True, recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
     res = recognize(text, config=config, aggregation_strategy="merge")
     assert embed(text, res["ents"]) == "PER und PER wurden Freunde. Die E-Mail von PER ist EMAIL."
 

@@ -1,20 +1,33 @@
-import stanza
-from spacy.tokens import Span
-from spacy_stanza import StanzaLanguage
+import subprocess
 
 
-def load_nlp(model_name, processors):
+def load_stanza_nlp(language, processors):
+    import stanza
+
     try:
-        snlp = stanza.Pipeline(lang=model_name, processors=processors)
+        stanza_nlp = stanza.Pipeline(lang=language, processors=processors)
     except FileNotFoundError:
-        stanza.download(model_name, processors=processors)
-        snlp = stanza.Pipeline(lang=model_name, processors=processors)
+        stanza.download(language, processors=processors)
+        stanza_nlp = stanza.Pipeline(lang=language, processors=processors)
 
-    nlp = StanzaLanguage(snlp)
-    return nlp
+    return stanza_nlp
+
+
+def load_spacy_nlp(language, disable_components):
+    import spacy
+
+    try:
+        spacy_nlp = spacy.load(language, disable=disable_components)
+    except IOError:
+        subprocess.run(["python", "-m", "spacy", "download", language])
+        spacy_nlp = spacy.load(language, disable=disable_components)
+
+    return spacy_nlp
 
 
 def configure_entity_extension_attributes():
+    from spacy.tokens import Span
+
     if not Span.has_extension("score"):
         Span.set_extension("score", default=-1.0)
     if not Span.has_extension("model"):

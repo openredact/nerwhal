@@ -16,6 +16,7 @@ class NamedEntity:
 
 @dataclass
 class Config:
-    model_name: str
+    language: str
     recognizer_paths: List[str]
-    load_examples: bool = False
+    use_statistical_ner: bool = False
+    load_example_recognizers: bool = False

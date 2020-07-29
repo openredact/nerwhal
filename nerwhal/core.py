@@ -7,7 +7,8 @@ from typing import List
 
 import nerwhal.backends
 from nerwhal.aggregation_strategies import aggregate
-from nerwhal.pipeline import Pipeline
+from nerwhal.backends.stanza_ner_backend import StanzaNerBackend
+from nerwhal.tokenizer import Tokenizer
 from nerwhal.scorer import score_entities
 from nerwhal.types import Config, NamedEntity
 from nerwhal.utils import _add_token_indices
@@ -19,7 +20,7 @@ class Core:
     def __init__(self):
         self.config = None
         self.backends = OrderedDict()
-        self.pipeline = None
+        self.tokenizer = None
 
     def update_config(self, config):
         if config == self.config:
@@ -27,14 +28,14 @@ class Core:
 
         self.config = config
 
-        # The pipeline takes a special role:
-        # - additionally to entities it also returns the tokenization
-        # - it provides the nlp method that can be used by recognizers
-        # - still it shares the interface with other backends such that they can be run in parallel
-        self.pipeline = Pipeline(self.config.model_name)
-        self.backends = {"spacy": self.pipeline}
+        self.tokenizer = Tokenizer(self.config.language)
 
-        if self.config.load_examples:
+        self.backends = {}
+
+        if self.config.use_statistical_ner:
+            self.backends["stanza"] = StanzaNerBackend(self.config.language)
+
+        if self.config.load_example_recognizers:
             self._add_examples_to_config_recognizer_paths()
 
         for recognizer_path in self.config.recognizer_paths:
@@ -48,7 +49,7 @@ class Core:
                 backend_cls = nerwhal.backends.load(recognizer_cls.BACKEND)
 
                 if recognizer_cls.BACKEND == "entity_ruler":
-                    backend_inst = backend_cls(self.config.model_name)
+                    backend_inst = backend_cls(self.config.language)
                 else:
                     backend_inst = backend_cls()
 
@@ -73,13 +74,8 @@ class Core:
                     self.config.recognizer_paths.append(example)
 
     def run_recognition(self, text):
-        results = self._run_in_parallel(self.backends.values(), text)
-
-        ents, tokens = results[0]  # pipeline additionally returns tokens
-        list_of_ent_lists = [ents]
-        for res in results[1:]:
-            list_of_ent_lists += [res]
-
+        tokens = self.tokenizer.run(text)
+        list_of_ent_lists = self._run_in_parallel(self.backends.values(), text)
         return list_of_ent_lists, tokens
 
     def _run_in_parallel(self, backends, text):
@@ -98,12 +94,6 @@ class Core:
             proc.join()
         results = [conn.recv() for conn in pipe_conns]
         return results
-
-    @property
-    def nlp(self):
-        if self.pipeline is None:
-            raise RuntimeError("The nlp property is only available once the config has been loaded.")
-        return self.pipeline.nlp
 
 
 core = Core()
