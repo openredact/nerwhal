@@ -15,7 +15,7 @@ class ReBackend(Backend):
     def register_recognizer(self, recognizer_cls: Type[ReRecognizer]):
         recognizer = recognizer_cls()
 
-        self.compiled_regexps += [re.compile(recognizer.regexp, flags=recognizer.flags)]
+        self.compiled_regexps += [re.compile(recognizer.regexp, flags=recognizer.FLAGS)]
         self.entities.append(recognizer.TAG)
         self.score.append(recognizer.SCORE)
 

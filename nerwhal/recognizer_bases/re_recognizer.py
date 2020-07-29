@@ -8,7 +8,7 @@ class ReRecognizer(Recognizer):
 
     @property
     @abstractmethod
-    def flags(self):
+    def FLAGS(self):
         pass
 
     @property

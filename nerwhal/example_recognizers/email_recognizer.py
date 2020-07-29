@@ -18,10 +18,7 @@ class EmailRecognizer(ReRecognizer):
 
     TAG = "EMAIL"
     SCORE = 0.95
-
-    @property
-    def flags(self):
-        return re.MULTILINE | re.VERBOSE
+    FLAGS = re.VERBOSE
 
     @property
     def regexp(self):

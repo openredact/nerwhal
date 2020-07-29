@@ -2,19 +2,19 @@ from abc import ABC, abstractmethod
 
 
 class Recognizer(ABC):
-    @classmethod
+    @property
     @abstractmethod
-    def BACKEND(cls):
+    def BACKEND(self):
         pass
 
-    @classmethod
+    @property
     @abstractmethod
-    def TAG(cls):
+    def TAG(self):
         pass
 
-    @classmethod
+    @property
     @abstractmethod
-    def SCORE(cls):
+    def SCORE(self):
         """A confidence score that estimates the probability that a result of this recognizer is a
         named entity for its tag."""
         pass
