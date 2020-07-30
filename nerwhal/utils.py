@@ -1,4 +1,4 @@
-def _add_token_indices(ents, tokenization):
+def add_token_indices(ents, tokenization):
     pos_to_token_idx = {}
 
     pos = 0

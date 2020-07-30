@@ -11,7 +11,7 @@ from nerwhal.backends.stanza_ner_backend import StanzaNerBackend
 from nerwhal.tokenizer import Tokenizer
 from nerwhal.scorer import score_entities
 from nerwhal.types import Config, NamedEntity
-from nerwhal.utils import _add_token_indices
+from nerwhal.utils import add_token_indices
 
 EXAMPLE_RECOGNIZERS_PATH = "nerwhal/example_recognizers"
 
@@ -74,9 +74,12 @@ class Core:
                     self.config.recognizer_paths.append(example)
 
     def run_recognition(self, text):
-        tokens = self.tokenizer.run(text)
         list_of_ent_lists = self._run_in_parallel(self.backends.values(), text)
-        return list_of_ent_lists, tokens
+        return list_of_ent_lists
+
+    def run_tokenizer(self, text):
+        tokens = self.tokenizer.run(text)
+        return tokens
 
     def _run_in_parallel(self, backends, text):
         def target(func, arg, pipe_end):
@@ -99,26 +102,29 @@ class Core:
 core = Core()
 
 
-def recognize(text: str, config: Config, aggregation_strategy="keep_all", return_tokens=True) -> dict:
+def recognize(text: str, config: Config, aggregation_strategy="keep_all", compute_tokens=True) -> dict:
     """Find personally identifiable data in the given text and return it.
 
-    :param return_tokens:
+    :param compute_tokens:
     :param config:
     :param text:
     :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
     """
     core.update_config(config)
-    results, tokens = core.run_recognition(text)
+    results = core.run_recognition(text)
 
     if len(results) == 0:
         ents = []
     else:
         ents = aggregate(*results, strategy=aggregation_strategy)
 
-    _add_token_indices(ents, tokens)
-    result = {"ents": ents}
-    if return_tokens:
+    result = {}
+    if compute_tokens:
+        tokens = core.run_tokenizer(text)
         result["tokens"] = tokens
+        add_token_indices(ents, tokens)
+
+    result["ents"] = ents
     return result
 
 
