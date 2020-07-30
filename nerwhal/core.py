@@ -23,6 +23,11 @@ class Core:
         self.tokenizer = None
 
     def update_config(self, config):
+        """Whenever the config is changed, the state of core is rebuilt from scratch.
+
+        :param config:
+        :return:
+        """
         if config == self.config:
             return
 
