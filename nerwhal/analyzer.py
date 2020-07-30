@@ -16,7 +16,7 @@ from nerwhal.utils import add_token_indices
 EXAMPLE_RECOGNIZERS_PATH = "nerwhal/example_recognizers"
 
 
-class Core:
+class Analyzer:
     def __init__(self):
         self.config = None
         self.backends = OrderedDict()
@@ -65,6 +65,10 @@ class Core:
 
             self.backends[recognizer_cls.BACKEND].register_recognizer(recognizer_cls)
 
+    def run_recognition(self, text):
+        list_of_ent_lists = self._run_in_parallel(self.backends.values(), text)
+        return list_of_ent_lists
+
     def _load_class(self, recognizer_path):
         module_name = os.path.splitext(os.path.basename(recognizer_path))[0]
         spec = importlib.util.spec_from_file_location(module_name, recognizer_path)
@@ -80,10 +84,6 @@ class Core:
                 example = os.path.join(EXAMPLE_RECOGNIZERS_PATH, file)
                 if example not in self.config.recognizer_paths:
                     self.config.recognizer_paths.append(example)
-
-    def run_recognition(self, text):
-        list_of_ent_lists = self._run_in_parallel(self.backends.values(), text)
-        return list_of_ent_lists
 
     def _run_in_parallel(self, backends, text):
         def target(func, arg, pipe_end):
@@ -103,7 +103,7 @@ class Core:
         return results
 
 
-core = Core()
+analyzer = Analyzer()
 
 
 def recognize(text: str, config: Config, combination_strategy="append", context_words=False, compute_tokens=True) -> dict:
@@ -115,8 +115,8 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
     :param text:
     :param combination_strategy: choose from `append`, `disjunctive_union` and `fusion`
     """
-    core.update_config(config)
-    results = core.run_recognition(text)
+    analyzer.update_config(config)
+    results = analyzer.run_recognition(text)
 
     if len(results) == 0:
         ents = []
@@ -127,8 +127,8 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
     tokens = []
     if compute_tokens or context_words:
         # tokenize
-        core.tokenizer.tokenize(text)
-        tokens = core.tokenizer.get_tokens()
+        analyzer.tokenizer.tokenize(text)
+        tokens = analyzer.tokenizer.get_tokens()
         add_token_indices(ents, tokens)
 
     if compute_tokens:
@@ -136,13 +136,13 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
 
     if context_words:
         for ent in ents:
-            sentence_tokens = core.tokenizer.get_sentence_for_token(ent.start_tok)
+            sentence_tokens = analyzer.tokenizer.get_sentence_for_token(ent.start_tok)
             sentence_without_ent = [
                 token.text for token in sentence_tokens if token.i < ent.start_tok or token.i >= ent.end_tok
             ]
-            context_words = core.recognizer_lookup[ent.recognizer].CONTEXT_WORDS
+            context_words = analyzer.recognizer_lookup[ent.recognizer].CONTEXT_WORDS
             if any(word in sentence_without_ent for word in context_words):
-                ent.score = min(ent.score * core.config.context_word_confidence_boost_factor, 1.0)
+                ent.score = min(ent.score * analyzer.config.context_word_confidence_boost_factor, 1.0)
 
     result["ents"] = ents
     return result
