@@ -10,7 +10,7 @@ class DeCountryRecognizer(FlashtextRecognizer):
     The long form is also recognized in many declined forms.
     """
 
-    TAG = "LOC"
+    TAG = "COUNTRY"
     SCORE = 0.95
     CONTEXT_WORDS = ["Land", "Länder", "Staat", "Staaten"]
 
