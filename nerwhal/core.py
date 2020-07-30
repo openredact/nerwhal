@@ -6,7 +6,7 @@ from multiprocessing.context import Process
 from typing import List
 
 import nerwhal.backends
-from nerwhal.aggregation_strategies import aggregate
+from nerwhal.combination_strategies import combine
 from nerwhal.backends.stanza_ner_backend import StanzaNerBackend
 from nerwhal.tokenizer import Tokenizer
 from nerwhal.scorer import score_entities
@@ -106,14 +106,14 @@ class Core:
 core = Core()
 
 
-def recognize(text: str, config: Config, aggregation_strategy="keep_all", context_words=False, compute_tokens=True) -> dict:
+def recognize(text: str, config: Config, combination_strategy="append", context_words=False, compute_tokens=True) -> dict:
     """Find personally identifiable data in the given text and return it.
 
     :param context_words: if True, use context words to boost the score of entities: if one of the
     :param compute_tokens:
     :param config:
     :param text:
-    :param aggregation_strategy: choose from `keep_all`, `ensure_disjointness` and `merge`
+    :param combination_strategy: choose from `append`, `disjunctive_union` and `fusion`
     """
     core.update_config(config)
     results = core.run_recognition(text)
@@ -121,7 +121,7 @@ def recognize(text: str, config: Config, aggregation_strategy="keep_all", contex
     if len(results) == 0:
         ents = []
     else:
-        ents = aggregate(*results, strategy=aggregation_strategy)
+        ents = combine(*results, strategy=combination_strategy)
 
     result = {}
     tokens = []
@@ -142,7 +142,7 @@ def recognize(text: str, config: Config, aggregation_strategy="keep_all", contex
             ]
             context_words = core.recognizer_lookup[ent.recognizer].CONTEXT_WORDS
             if any(word in sentence_without_ent for word in context_words):
-                ent.score = max(ent.score * core.config.context_word_confidence_boost_factor, 1.0)
+                ent.score = min(ent.score * core.config.context_word_confidence_boost_factor, 1.0)
 
     result["ents"] = ents
     return result

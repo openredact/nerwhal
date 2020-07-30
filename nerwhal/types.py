@@ -21,4 +21,4 @@ class Config:
     recognizer_paths: Optional[List[str]] = field(default_factory=list)
     use_statistical_ner: Optional[bool] = False
     load_example_recognizers: Optional[bool] = False
-    context_word_confidence_boost_factor: Optional[int] = 1.2
+    context_word_confidence_boost_factor: Optional[float] = 1.2
