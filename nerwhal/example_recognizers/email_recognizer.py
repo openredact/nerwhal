@@ -19,6 +19,7 @@ class EmailRecognizer(ReRecognizer):
     TAG = "EMAIL"
     SCORE = 0.95
     FLAGS = re.VERBOSE
+    CONTEXT_WORDS = ["E-Mail", "email", "Mail", "mail"]
 
     @property
     def regexp(self):

@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class Recognizer(ABC):
+    CONTEXT_WORDS = []
+
     @property
     @abstractmethod
     def BACKEND(self):

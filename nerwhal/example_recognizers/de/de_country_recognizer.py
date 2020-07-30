@@ -12,6 +12,7 @@ class DeCountryRecognizer(FlashtextRecognizer):
 
     TAG = "LOC"
     SCORE = 0.95
+    CONTEXT_WORDS = ["Land", "Länder", "Staat", "Staaten"]
 
     def __init__(self):
         path = Path(__file__).parent / "data" / "countries.csv"

@@ -41,14 +41,12 @@ def test_abbreviated_1355_1(backend, embed):
 def test_1355_1_invalid_month(backend, embed):
     text = "Der 24.13.1999 ist ein zufälliges Datum."
     ents = backend.run(text)
-    print(embed(text, ents))
     assert len(ents) == 0
 
 
 def test_1355_1_invalid_day(backend, embed):
     text = "Der 35.12.1999 ist ein zufälliges Datum."
     ents = backend.run(text)
-    print(embed(text, ents))
     assert len(ents) == 0
 
 
@@ -70,14 +68,12 @@ def test_future_5008(backend, embed):
 def test_5008_invalid_month(backend, embed):
     text = "Der 1999-13-25 ist ein zufälliges Datum."
     ents = backend.run(text)
-    print(embed(text, ents))
     assert len(ents) == 0
 
 
 def test_5008_invalid_day(backend, embed):
     text = "Der 1999-12-35 ist ein zufälliges Datum."
     ents = backend.run(text)
-    print(embed(text, ents))
     assert len(ents) == 0
 
 
@@ -117,12 +113,10 @@ def test_with_day_written_out(backend, embed):
 def test_written_out_invalid_month(backend, embed):
     text = "Der 24. Foobar 1999 ist ein zufälliges Datum."
     ents = backend.run(text)
-    print(embed(text, ents))
     assert len(ents) == 0
 
 
 def test_written_out_invalid_day(backend, embed):
     text = "Der 35. Dezember 1999 ist ein zufälliges Datum."
     ents = backend.run(text)
-    print(embed(text, ents))
     assert len(ents) == 0

@@ -7,6 +7,7 @@ class DeDateRecognizer(EntityRulerRecognizer):
 
     TAG = "DATE"
     SCORE = 0.99
+    CONTEXT_WORDS = ["Datum", "Tag", "Geburtstag", "Geburtsdatum"]
 
     @property
     def patterns(self):

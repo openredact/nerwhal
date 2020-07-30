@@ -10,7 +10,8 @@ def tokenizer():
 
 def test_simple_tokenization(tokenizer):
     text = "Ein kurzer Satz."
-    tokens = tokenizer.run(text)
+    tokenizer.tokenize(text)
+    tokens = tokenizer.get_tokens()
     assert tokens[0] == {"text": "Ein", "has_ws": True, "start_char": 0, "end_char": 3}
     assert tokens[1] == {"text": "kurzer", "has_ws": True, "start_char": 4, "end_char": 10}
     assert tokens[2] == {"text": "Satz", "has_ws": False, "start_char": 11, "end_char": 15}
@@ -19,7 +20,8 @@ def test_simple_tokenization(tokenizer):
 
 def test_that_contractions_are_not_expanded(tokenizer):
     text = "Wir geh'n zum Bus."
-    tokens = tokenizer.run(text)
+    tokenizer.tokenize(text)
+    tokens = tokenizer.get_tokens()
     assert tokens[0] == {"text": "Wir", "has_ws": True, "start_char": 0, "end_char": 3}
     assert tokens[1] == {"text": "geh'n", "has_ws": True, "start_char": 4, "end_char": 9}
     assert tokens[2] == {"text": "zum", "has_ws": True, "start_char": 10, "end_char": 13}

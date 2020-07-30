@@ -21,7 +21,7 @@ def test_single_recognizer(embed):
     assert ents[0].tag == "TEST"
     assert ents[0].text == "abc cde"
     assert ents[0].score == 1.0
-    assert ents[0].model == "entity-ruler_TestRecognizer"
+    assert ents[0].recognizer == "TestRecognizer"
 
 
 def test_multiple_recognizers(embed):

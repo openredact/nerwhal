@@ -24,3 +24,17 @@ def test_evaluate():
     assert scores["tags"]["LOC"]["true_positives"] == 1
     assert scores["tags"]["LOC"]["false_positives"] == 0
     assert scores["tags"]["LOC"]["false_negatives"] == 1
+
+
+def test_boosting_confidence_with_context_words(embed):
+    config = Config("de", recognizer_paths=["nerwhal/example_recognizers/de/de_date_recognizer.py"])
+
+    text_with_context = "Ich habe am 12.12.2012 Geburtstag."
+    res_with_context = recognize(text_with_context, config=config, context_words=True)
+    assert embed(text_with_context, res_with_context["ents"]) == "Ich habe am DATE Geburtstag."
+
+    text_without_context = "Ich habe am 12.12.2012 Hunger."
+    res_without_context = recognize(text_without_context, config=config, context_words=True)
+    assert embed(text_without_context, res_without_context["ents"]) == "Ich habe am DATE Hunger."
+
+    assert res_with_context["ents"][0].score > res_without_context["ents"][0].score

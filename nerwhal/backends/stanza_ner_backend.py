@@ -10,11 +10,13 @@ NER_SCORE = 0.8
 class StanzaNerBackend(Backend):
     def __init__(self, language):
         self.stanza_nlp = load_stanza_nlp(language, processors="tokenize,mwt,ner")
-        self.name = f"stanza_{language}"
 
     def register_recognizer(self, recognizer_cls):
         raise NotImplementedError()
 
     def run(self, text):
         doc = self.stanza_nlp(text)
-        return [NamedEntity(ent.start_char, ent.end_char, ent.type, ent.text, NER_SCORE, self.name) for ent in doc.entities]
+        return [
+            NamedEntity(ent.start_char, ent.end_char, ent.type, ent.text, NER_SCORE, self.__class__.__name__)
+            for ent in doc.entities
+        ]

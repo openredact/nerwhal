@@ -17,18 +17,22 @@ class EntityRulerBackend(Backend):
     def register_recognizer(self, recognizer_cls: Type[EntityRulerRecognizer]):
         recognizer = recognizer_cls()
 
-        name = "entity-ruler_" + recognizer_cls.__name__
+        recognizer_name = recognizer_cls.__name__
         ruler = EntityRuler(self.nlp)
-        self.nlp.add_pipe(ruler, name)
+        self.nlp.add_pipe(ruler, recognizer_name)
         rules = [{"label": recognizer.TAG, "pattern": pattern} for pattern in recognizer.patterns]
         ruler.add_patterns(rules)
-        self.nlp.add_pipe(set_entity_extension_attributes(recognizer.SCORE, name), name="label_" + name, after=name)
+        self.nlp.add_pipe(
+            set_entity_extension_attributes(recognizer.SCORE, recognizer_name),
+            name="label_" + recognizer_name,
+            after=recognizer_name,
+        )
 
     def run(self, text):
         doc = self.nlp(text)
 
         ents = []
         for ent in doc.ents:
-            ents += [NamedEntity(ent.start_char, ent.end_char, ent.label_, ent.text, ent._.score, ent._.model)]
+            ents += [NamedEntity(ent.start_char, ent.end_char, ent.label_, ent.text, ent._.score, ent._.recognizer)]
 
         return ents

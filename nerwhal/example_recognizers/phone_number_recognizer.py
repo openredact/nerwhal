@@ -23,6 +23,7 @@ class PhoneNumberRecognizer(ReRecognizer):
     SCORE = 0.8
     GROUP = 1
     FLAGS = re.VERBOSE
+    CONTEXT_WORDS = ["number", "Nummer", "tel.", "Tel.", "mobil", "Telefon", "telephone"]
 
     COUNTRY_CODE_REGEX = r"\(?(\+|00)\)?\d{1,3}"
     AREA_CODE = r"(\(?0\)?[ ]?\d{1,4}|\(?\d{1,5}\)?)"

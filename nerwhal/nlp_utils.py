@@ -30,17 +30,17 @@ def configure_entity_extension_attributes():
 
     if not Span.has_extension("score"):
         Span.set_extension("score", default=-1.0)
-    if not Span.has_extension("model"):
-        Span.set_extension("model", default="")
+    if not Span.has_extension("recognizer"):
+        Span.set_extension("recognizer", default="")
 
 
-def set_entity_extension_attributes(score, model):
+def set_entity_extension_attributes(score, recognizer):
     def function(doc):
         for ent in doc.ents:
             if ent._.score >= 0:
                 continue
             ent._.score = score
-            ent._.model = model
+            ent._.recognizer = recognizer
         return doc
 
     return function

@@ -21,7 +21,7 @@ def test_single_recognizer(embed):
     assert ents[0].tag == "XX"
     assert ents[0].text == "abc"
     assert ents[0].score == 1.0
-    assert ents[0].model == "flashtext"
+    assert ents[0].recognizer == "TestRecognizer"
 
 
 def test_multiple_recognizers(embed):

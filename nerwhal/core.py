@@ -21,6 +21,7 @@ class Core:
         self.config = None
         self.backends = OrderedDict()
         self.tokenizer = None
+        self.recognizer_lookup = None
 
     def update_config(self, config):
         """Whenever the config is changed, the state of core is rebuilt from scratch.
@@ -43,17 +44,19 @@ class Core:
         if self.config.load_example_recognizers:
             self._add_examples_to_config_recognizer_paths()
 
+        self.recognizer_lookup = {}
         for recognizer_path in self.config.recognizer_paths:
             if not os.path.isfile(recognizer_path):
                 raise ValueError(f"Configured recognizer {recognizer_path} is not a file")
 
             recognizer_cls = self._load_class(recognizer_path)
+            self.recognizer_lookup[recognizer_cls.__name__] = recognizer_cls
 
             # import only the backend modules that are configured
             if recognizer_cls.BACKEND not in self.backends.keys():
                 backend_cls = nerwhal.backends.load(recognizer_cls.BACKEND)
 
-                if recognizer_cls.BACKEND == "entity_ruler":
+                if recognizer_cls.BACKEND == "entity-ruler":
                     backend_inst = backend_cls(self.config.language)
                 else:
                     backend_inst = backend_cls()
@@ -82,10 +85,6 @@ class Core:
         list_of_ent_lists = self._run_in_parallel(self.backends.values(), text)
         return list_of_ent_lists
 
-    def run_tokenizer(self, text):
-        tokens = self.tokenizer.run(text)
-        return tokens
-
     def _run_in_parallel(self, backends, text):
         def target(func, arg, pipe_end):
             pipe_end.send(func(arg))
@@ -107,9 +106,10 @@ class Core:
 core = Core()
 
 
-def recognize(text: str, config: Config, aggregation_strategy="keep_all", compute_tokens=True) -> dict:
+def recognize(text: str, config: Config, aggregation_strategy="keep_all", context_words=False, compute_tokens=True) -> dict:
     """Find personally identifiable data in the given text and return it.
 
+    :param context_words: if True, use context words to boost the score of entities: if one of the
     :param compute_tokens:
     :param config:
     :param text:
@@ -124,10 +124,25 @@ def recognize(text: str, config: Config, aggregation_strategy="keep_all", comput
         ents = aggregate(*results, strategy=aggregation_strategy)
 
     result = {}
-    if compute_tokens:
-        tokens = core.run_tokenizer(text)
-        result["tokens"] = tokens
+    tokens = []
+    if compute_tokens or context_words:
+        # tokenize
+        core.tokenizer.tokenize(text)
+        tokens = core.tokenizer.get_tokens()
         add_token_indices(ents, tokens)
+
+    if compute_tokens:
+        result["tokens"] = tokens
+
+    if context_words:
+        for ent in ents:
+            sentence_tokens = core.tokenizer.get_sentence_for_token(ent.start_tok)
+            sentence_without_ent = [
+                token.text for token in sentence_tokens if token.i < ent.start_tok or token.i >= ent.end_tok
+            ]
+            context_words = core.recognizer_lookup[ent.recognizer].CONTEXT_WORDS
+            if any(word in sentence_without_ent for word in context_words):
+                ent.score = max(ent.score * core.config.context_word_confidence_boost_factor, 1.0)
 
     result["ents"] = ents
     return result

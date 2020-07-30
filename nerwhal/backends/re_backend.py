@@ -21,6 +21,7 @@ class ReBackend(Backend):
         ents = []
         for pattern, rec in zip(self.compiled_regexps, self.recognizer_classes):
             ents += [
-                NamedEntity(*m.span(rec.GROUP), rec.TAG, m.group(rec.GROUP), rec.SCORE, "re") for m in pattern.finditer(text)
+                NamedEntity(*m.span(rec.GROUP), rec.TAG, m.group(rec.GROUP), rec.SCORE, rec.__name__)
+                for m in pattern.finditer(text)
             ]
         return ents

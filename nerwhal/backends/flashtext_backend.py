@@ -14,7 +14,7 @@ class FlashtextBackend(Backend):
     def register_recognizer(self, recognizer_cls: Type[FlashtextRecognizer]):
         recognizer = recognizer_cls()
 
-        key = f"{recognizer.TAG}:{recognizer.SCORE}"
+        key = f"{recognizer.TAG}:{recognizer.SCORE}:{recognizer_cls.__name__}"
         keyword_dict = {key: recognizer.keywords}
         self.keyword_processor.add_keywords_from_dict(keyword_dict)
 
@@ -23,7 +23,7 @@ class FlashtextBackend(Backend):
 
         ents = []
         for keyword_key, start, end in keywords:
-            tag, score = keyword_key.split(":")
-            ent = NamedEntity(start, end, tag, text[start:end], float(score), "flashtext")
+            tag, score, recognizer_name = keyword_key.split(":")
+            ent = NamedEntity(start, end, tag, text[start:end], float(score), recognizer_name)
             ents.append(ent)
         return ents

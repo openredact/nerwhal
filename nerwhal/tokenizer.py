@@ -6,11 +6,13 @@ configure_entity_extension_attributes()
 
 class Tokenizer:
     def __init__(self, language):
-        self.nlp = load_spacy_nlp(language, disable_components=["tagger", "parser", "ner"])
+        self.nlp = load_spacy_nlp(language, disable_components=["tagger", "ner"])
+        self.doc = None
 
-    def run(self, text):
-        doc = self.nlp(text)
+    def tokenize(self, text):
+        self.doc = self.nlp(text)
 
+    def get_tokens(self):
         tokens = [
             {
                 "text": token.text,
@@ -18,6 +20,9 @@ class Tokenizer:
                 "start_char": token.idx,
                 "end_char": token.idx + len(token),
             }
-            for token in doc
+            for token in self.doc
         ]
         return tokens
+
+    def get_sentence_for_token(self, i):
+        return self.doc[i].sent
