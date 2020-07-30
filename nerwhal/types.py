@@ -1,5 +1,6 @@
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Optional
+import pydantic
 
 
 @dataclass
@@ -14,9 +15,9 @@ class NamedEntity:
     end_tok: int = None
 
 
-@dataclass
+@pydantic.dataclasses.dataclass
 class Config:
     language: str
-    recognizer_paths: List[str]
-    use_statistical_ner: bool = False
-    load_example_recognizers: bool = False
+    recognizer_paths: Optional[List[str]] = field(default_factory=list)
+    use_statistical_ner: Optional[bool] = False
+    load_example_recognizers: Optional[bool] = False
