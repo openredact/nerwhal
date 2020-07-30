@@ -17,7 +17,7 @@ class EntityRulerBackend(Backend):
     def register_recognizer(self, recognizer_cls: Type[EntityRulerRecognizer]):
         recognizer = recognizer_cls()
 
-        name = recognizer_cls.__name__
+        name = "entity-ruler_" + recognizer_cls.__name__
         ruler = EntityRuler(self.nlp)
         self.nlp.add_pipe(ruler, name)
         rules = [{"label": recognizer.TAG, "pattern": pattern} for pattern in recognizer.patterns]

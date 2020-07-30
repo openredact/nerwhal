@@ -24,6 +24,6 @@ class FlashtextBackend(Backend):
         ents = []
         for keyword_key, start, end in keywords:
             tag, score = keyword_key.split(":")
-            ent = NamedEntity(start, end, tag, text[start:end], score, "flashtext")
+            ent = NamedEntity(start, end, tag, text[start:end], float(score), "flashtext")
             ents.append(ent)
         return ents
