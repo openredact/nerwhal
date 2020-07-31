@@ -8,7 +8,7 @@ def test_tokenize_line_breaks():
 
     print(f"Tokens: {tokens}")
 
-    assert 1 == len([t for t in tokens if t["has_br"]])
+    assert 1 == len([t for t in tokens if t["br_count"] > 0])
 
     # one double line break
     text = "Han Solo und Wookiee Chewbacca wurden Freunde.\n\nHan's E-Mail ist han.solo@imperium.com."
@@ -16,7 +16,7 @@ def test_tokenize_line_breaks():
 
     print(f"Tokens: {tokens}")
 
-    assert 1 == len([t for t in tokens if t["has_br"]])
+    assert 1 == len([t for t in tokens if t["br_count"] > 0])
 
     # two single line breaks
     text = "Hi there!\nHan Solo und Wookiee Chewbacca wurden Freunde.\n\nHan's E-Mail ist han.solo@imperium.com."
@@ -24,4 +24,4 @@ def test_tokenize_line_breaks():
 
     print(f"Tokens: {tokens}")
 
-    assert 2 == len([t for t in tokens if t["has_br"]])
+    assert 2 == len([t for t in tokens if t["br_count"] > 0])
