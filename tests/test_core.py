@@ -9,7 +9,7 @@ def test_recognize(embed):
     config = Config("de", recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
     res = recognize(text, config=config, combination_strategy="fusion")
     assert embed(text, res["ents"]) == "Die E-Mail von Han ist EMAIL."
-    assert res["tokens"][0] == Token(text="Die", has_ws=True, has_br=False, start_char=0, end_char=3)
+    assert res["tokens"][0] == Token(text="Die", has_ws=True, br_count=0, start_char=0, end_char=3)
 
 
 @pytest.mark.stanza
