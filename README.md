@@ -86,9 +86,9 @@ The tests can be executed with:
 pytest --cov-report term --cov=nerwhal
 ```
 
-To skip slow tests run:
+To skip tests that require the download of stanza models run:
 ```
-pytest --doctest-modules -m "not slow"
+pytest -m "not slow"
 ```
 
 ## License
