@@ -34,6 +34,8 @@ class EntityRulerBackend(Backend):
 
     def run(self, text):
         doc = self.nlp(text)
+        for t in doc:
+            print(t, t.is_digit)
 
         ents = []
         for ent in doc.ents:
