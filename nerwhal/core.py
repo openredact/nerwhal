@@ -116,12 +116,12 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
     :param combination_strategy: choose from `append`, `disjunctive_union` and `fusion`
     """
     analyzer.update_config(config)
-    results = analyzer.run_recognition(text)
+    recognition_results = analyzer.run_recognition(text)
 
-    if len(results) == 0:
+    if len(recognition_results) == 0:
         ents = []
     else:
-        ents = combine(*results, strategy=combination_strategy)
+        ents = combine(*recognition_results, strategy=combination_strategy)
 
     result = {}
     tokens = []
