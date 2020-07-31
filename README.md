@@ -1,4 +1,4 @@
-# PII Identifier
+# Nerwhal
 
 _**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
 
@@ -13,13 +13,13 @@ A Python module that finds personally identifiable information in unstructured t
 
 ## Description
 
-PII Identifier is a framework that helps find PIIs (Personally Identifiable Information) in text. Recognizers uncover
+Nerwhal is a framework that helps find named entities in text. Recognizers uncover
 mentions that can be used to identify persons, such as name, phone number or place of birth.
 
 Note, that while the package is language agnostic, the included models and recognizers are for the **German** language.
 
 _**:warning: Disclaimer :warning::**_ This is a prototype, which must not be used in production without further protections. For
-the following reasons not all PIIs can be found:
+the following reasons not all named entities can be found:
 - the set of recognizers is not exhaustive
 - the rules of each recognizer do not cover all of the ways in which information can be expressed; the limitations of
 each recognizer are to the best of our knowledge noted in its code documentation.
@@ -34,18 +34,19 @@ entities in the given text and that many indirect indicators as well as linkage 
 
 The recognizers are built on top of powerful NLP engines:
 - [spaCy](https://github.com/explosion/spaCy) for statistical NER and rule based matching on a token level
-- [flair](https://github.com/flairNLP/flair) for statistical NER
 - and of course the good ol' regular expressions
 
 The engines can be found in the [Backends Package](nerwhal/backends). The recognizers operate on these backends
-and are located in the [Recognizers Package](nerwhal/recognizers).
+and are located in the [Recognizers Package](nerwhal/example_recognizers).
 
 ## Usage
 
-```
-from nerwhal import find_piis
+```python
+from nerwhal import recognize, Config
 
-piis = find_piis(your_text)
+config = Config("de", ["nerwhal/example_recognizers/email_recognizer.py"])
+
+recognize("Ich heiße Luke und meine E-Mail ist luke@skywalker.com.", config=config)
 ```
 
 ## Development
@@ -92,4 +93,4 @@ pytest --doctest-modules -m "not slow"
 
 ## License
 
-MIT
+[MIT License](https://github.com/openredact/nerwhal/blob/master/LICENSE)
