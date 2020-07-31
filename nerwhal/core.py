@@ -40,8 +40,8 @@ class Analyzer:
         if self.config.use_statistical_ner:
             self.backends["stanza"] = StanzaNerBackend(self.config.language)
 
-        if self.config.load_example_recognizers:
-            self._add_examples_to_config_recognizer_paths()
+        if self.config.load_integrated_recognizers:
+            self._add_integrated_recognizers_to_config_recognizer_paths()
 
         self.recognizer_lookup = {}
         for recognizer_path in self.config.recognizer_paths:
@@ -77,8 +77,8 @@ class Analyzer:
         recognizer_cls = getattr(module, class_name)
         return recognizer_cls
 
-    def _add_examples_to_config_recognizer_paths(self):
-        for root, _, files in os.walk(Path(__file__).parent / "example_recognizers"):
+    def _add_integrated_recognizers_to_config_recognizer_paths(self):
+        for root, _, files in os.walk(Path(__file__).parent / "integrated_recognizers"):
             for file in files:
                 if file.endswith("_recognizer.py"):
                     example = os.path.join(root, file)

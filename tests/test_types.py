@@ -20,7 +20,7 @@ def test_full_config_from_json():
         "language": "de",
         "recognizer_paths": ["foo/bar.py"],
         "use_statistical_ner": true,
-        "load_example_recognizers": false
+        "load_integrated_recognizers": false
     }
     """
     config_dict = json.loads(config_json)
@@ -28,4 +28,4 @@ def test_full_config_from_json():
     assert config.language == "de"
     assert config.recognizer_paths == ["foo/bar.py"]
     assert config.use_statistical_ner
-    assert not config.load_example_recognizers
+    assert not config.load_integrated_recognizers

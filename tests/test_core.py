@@ -6,7 +6,7 @@ from nerwhal.types import Token
 
 def test_recognize(embed):
     text = "Die E-Mail von Han ist han.solo@imperium.com."
-    config = Config("de", recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
+    config = Config("de", recognizer_paths=["nerwhal/integrated_recognizers/email_recognizer.py"])
     res = recognize(text, config=config, combination_strategy="fusion")
     assert embed(text, res["ents"]) == "Die E-Mail von Han ist EMAIL."
     assert res["tokens"][0] == Token(text="Die", has_ws=True, br_count=0, start_char=0, end_char=3)
@@ -15,7 +15,7 @@ def test_recognize(embed):
 @pytest.mark.stanza
 def test_recognize_with_statistical_ner(embed):
     text = "Han Solo und Wookiee Chewbacca wurden Freunde. Die E-Mail von Han ist han.solo@imperium.com."
-    config = Config("de", use_statistical_ner=True, recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
+    config = Config("de", use_statistical_ner=True, recognizer_paths=["nerwhal/integrated_recognizers/email_recognizer.py"])
     res = recognize(text, config=config, combination_strategy="fusion")
     assert embed(text, res["ents"]) == "PER und PER wurden Freunde. Die E-Mail von PER ist EMAIL."
     assert res["tokens"][0] == Token(text="Han", has_ws=True, br_count=0, start_char=0, end_char=3)
@@ -40,7 +40,7 @@ def test_evaluate():
 
 
 def test_boosting_confidence_with_context_words(embed):
-    config = Config("de", recognizer_paths=["nerwhal/example_recognizers/de/de_date_recognizer.py"])
+    config = Config("de", recognizer_paths=["nerwhal/integrated_recognizers/de/de_date_recognizer.py"])
 
     text_with_context = "Ich habe am 12.12.2012 Geburtstag."
     res_with_context = recognize(text_with_context, config=config, context_words=True)

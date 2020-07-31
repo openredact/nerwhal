@@ -37,7 +37,7 @@ The recognizers are built on top of powerful NLP engines:
 - and of course the good ol' regular expressions
 
 The engines can be found in the [Backends Package](nerwhal/backends). The recognizers operate on these backends
-and are located in the [Recognizers Package](nerwhal/example_recognizers).
+and are located in the [Recognizers Package](nerwhal/integrated_recognizers).
 
 ## Usage
 

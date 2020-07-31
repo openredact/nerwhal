@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.example_recognizers.de.de_date_recognizer import DeDateRecognizer
+from nerwhal.integrated_recognizers.de.de_date_recognizer import DeDateRecognizer
 
 
 @pytest.fixture(scope="module")

@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.example_recognizers.phone_number_recognizer import PhoneNumberRecognizer
+from nerwhal.integrated_recognizers.phone_number_recognizer import PhoneNumberRecognizer
 
 
 @pytest.fixture(scope="module")

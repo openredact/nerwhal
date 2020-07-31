@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.example_recognizers.email_recognizer import EmailRecognizer
+from nerwhal.integrated_recognizers.email_recognizer import EmailRecognizer
 
 
 @pytest.fixture

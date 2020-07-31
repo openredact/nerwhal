@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.example_recognizers.cardinal_recognizer import CardinalRecognizer
+from nerwhal.integrated_recognizers.cardinal_recognizer import CardinalRecognizer
 
 
 @pytest.fixture

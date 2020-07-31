@@ -1,6 +1,6 @@
 import pytest
 
-from nerwhal.example_recognizers.money_recognizer import MoneyRecognizer
+from nerwhal.integrated_recognizers.money_recognizer import MoneyRecognizer
 
 
 @pytest.fixture(scope="module")
