@@ -3,6 +3,7 @@ import os
 from collections import OrderedDict
 from multiprocessing import Pipe
 from multiprocessing.context import Process
+from pathlib import Path
 from typing import List
 
 import nerwhal.backends
@@ -12,8 +13,6 @@ from nerwhal.tokenizer import Tokenizer
 from nerwhal.scorer import score_entities
 from nerwhal.types import Config, NamedEntity
 from nerwhal.utils import add_token_indices
-
-EXAMPLE_RECOGNIZERS_PATH = "nerwhal/example_recognizers"
 
 
 class Analyzer:
@@ -79,7 +78,7 @@ class Analyzer:
         return recognizer_cls
 
     def _add_examples_to_config_recognizer_paths(self):
-        for root, _, files in os.walk(EXAMPLE_RECOGNIZERS_PATH):
+        for root, _, files in os.walk(Path(__file__).parent / "example_recognizers"):
             for file in files:
                 if file.endswith("_recognizer.py"):
                     example = os.path.join(root, file)
