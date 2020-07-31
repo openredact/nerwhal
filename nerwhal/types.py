@@ -15,6 +15,14 @@ class NamedEntity:
     end_tok: int = None
 
 
+@dataclass
+class Token:
+    text: str
+    has_ws: bool
+    start_char: int
+    end_char: int
+
+
 @pydantic.dataclasses.dataclass
 class Config:
     language: str

@@ -1,5 +1,5 @@
 from nerwhal.nlp_utils import load_spacy_nlp, configure_entity_extension_attributes
-
+from nerwhal.types import Token
 
 configure_entity_extension_attributes()
 
@@ -14,12 +14,7 @@ class Tokenizer:
 
     def get_tokens(self):
         tokens = [
-            {
-                "text": token.text,
-                "has_ws": token.whitespace_ == " ",
-                "start_char": token.idx,
-                "end_char": token.idx + len(token),
-            }
+            Token(text=token.text, has_ws=token.whitespace_ == " ", start_char=token.idx, end_char=token.idx + len(token))
             for token in self.doc
         ]
         return tokens

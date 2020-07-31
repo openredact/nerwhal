@@ -1,4 +1,5 @@
 from nerwhal import recognize, evaluate, NamedEntity, Config
+from nerwhal.types import Token
 
 
 def test_recognize(embed):
@@ -6,6 +7,7 @@ def test_recognize(embed):
     config = Config("de", use_statistical_ner=True, recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
     res = recognize(text, config=config, combination_strategy="fusion")
     assert embed(text, res["ents"]) == "PER und PER wurden Freunde. Die E-Mail von PER ist EMAIL."
+    assert res["tokens"][0] == Token(text="Han", has_ws=True, start_char=0, end_char=3)
 
 
 def test_evaluate():

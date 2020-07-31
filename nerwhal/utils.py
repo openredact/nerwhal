@@ -1,14 +1,14 @@
-def add_token_indices(ents, tokenization):
+def add_token_indices(ents, tokens):
     pos_to_token_idx = {}
 
     pos = 0
-    for idx, token in enumerate(tokenization):
-        token_len = len(token["text"])
+    for idx, token in enumerate(tokens):
+        token_len = len(token.text)
         pos_to_token_idx[pos] = idx  # start
         pos_to_token_idx[pos + token_len - 1] = idx  # end
 
         pos += token_len
-        if token["has_ws"]:
+        if token.has_ws:
             pos += 1
 
     for ent in ents:
