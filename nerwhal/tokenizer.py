@@ -27,6 +27,12 @@ class Tokenizer:
 
     def _to_nerwhal_tokens(self, spacy_tokens):
         return [
-            Token(text=token.text, has_ws=token.whitespace_ == " ", start_char=token.idx, end_char=token.idx + len(token))
+            Token(
+                text=token.text,
+                has_ws=token.whitespace_ == " ",
+                has_br="\n" in token.text,
+                start_char=token.idx,
+                end_char=token.idx + len(token),
+            )
             for token in spacy_tokens
         ]
