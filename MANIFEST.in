@@ -1,2 +1,2 @@
 include LICENSE
-recursive-include nerwhal/integrated_recognizers/data *
+recursive-include nerwhal/integrated_recognizers/de/data *
