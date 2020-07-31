@@ -25,7 +25,7 @@ def load_spacy_nlp(language, disable_components):
     return spacy_nlp
 
 
-def configure_entity_extension_attributes():
+def configure_spacy_entity_extension_attributes():
     from spacy.tokens import Span
 
     if not Span.has_extension("score"):
@@ -34,7 +34,7 @@ def configure_entity_extension_attributes():
         Span.set_extension("recognizer", default="")
 
 
-def set_entity_extension_attributes(score, recognizer):
+def set_spacy_entity_extension_attributes(score, recognizer):
     def function(doc):
         for ent in doc.ents:
             if ent._.score >= 0:

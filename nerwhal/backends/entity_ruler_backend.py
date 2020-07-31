@@ -5,9 +5,13 @@ from spacy.pipeline import EntityRuler
 from .base import Backend
 from nerwhal.recognizer_bases import EntityRulerRecognizer
 from nerwhal.types import NamedEntity
-from nerwhal.nlp_utils import configure_entity_extension_attributes, set_entity_extension_attributes, load_spacy_nlp
+from nerwhal.nlp_utils import (
+    configure_spacy_entity_extension_attributes,
+    set_spacy_entity_extension_attributes,
+    load_spacy_nlp,
+)
 
-configure_entity_extension_attributes()
+configure_spacy_entity_extension_attributes()
 
 
 class EntityRulerBackend(Backend):
@@ -23,7 +27,7 @@ class EntityRulerBackend(Backend):
         rules = [{"label": recognizer.TAG, "pattern": pattern} for pattern in recognizer.patterns]
         ruler.add_patterns(rules)
         self.nlp.add_pipe(
-            set_entity_extension_attributes(recognizer.SCORE, recognizer_name),
+            set_spacy_entity_extension_attributes(recognizer.SCORE, recognizer_name),
             name="label_" + recognizer_name,
             after=recognizer_name,
         )

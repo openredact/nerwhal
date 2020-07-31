@@ -137,12 +137,12 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
 
     if context_words:
         for ent in ents:
-            sentence_tokens = analyzer.tokenizer.get_sentence_for_token(ent.start_tok)
-            sentence_without_ent = [
-                token.text for token in sentence_tokens if token.i < ent.start_tok or token.i >= ent.end_tok
-            ]
+            sentence_tokens = analyzer.tokenizer.get_sentence_for_token(
+                ent.start_tok, exclude_tokens=list(range(ent.start_tok, ent.end_tok))
+            )
+            sentence_words = [token.text for token in sentence_tokens]
             context_words = analyzer.recognizer_lookup[ent.recognizer].CONTEXT_WORDS
-            if any(word in sentence_without_ent for word in context_words):
+            if any(word in sentence_words for word in context_words):
                 ent.score = min(ent.score * analyzer.config.context_word_confidence_boost_factor, 1.0)
 
     result["ents"] = ents
