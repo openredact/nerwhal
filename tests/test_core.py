@@ -1,8 +1,19 @@
+import pytest
+
 from nerwhal import recognize, evaluate, NamedEntity, Config
 from nerwhal.types import Token
 
 
 def test_recognize(embed):
+    text = "Die E-Mail von Han ist han.solo@imperium.com."
+    config = Config("de", recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
+    res = recognize(text, config=config, combination_strategy="fusion")
+    assert embed(text, res["ents"]) == "Die E-Mail von Han ist EMAIL."
+    assert res["tokens"][0] == Token(text="Die", has_ws=True, has_br=False, start_char=0, end_char=3)
+
+
+@pytest.mark.stanza
+def test_recognize_with_statistical_ner(embed):
     text = "Han Solo und Wookiee Chewbacca wurden Freunde. Die E-Mail von Han ist han.solo@imperium.com."
     config = Config("de", use_statistical_ner=True, recognizer_paths=["nerwhal/example_recognizers/email_recognizer.py"])
     res = recognize(text, config=config, combination_strategy="fusion")
