@@ -6,7 +6,7 @@ def load_stanza_nlp(language, processors):
 
     try:
         stanza_nlp = stanza.Pipeline(lang=language, processors=processors)
-    except FileNotFoundError:
+    except Exception:
         stanza.download(language, processors=processors)
         stanza_nlp = stanza.Pipeline(lang=language, processors=processors)
 
