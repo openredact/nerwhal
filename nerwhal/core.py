@@ -79,11 +79,12 @@ class Analyzer:
         return recognizer_cls
 
     def _add_examples_to_config_recognizer_paths(self):
-        for file in os.listdir(EXAMPLE_RECOGNIZERS_PATH):
-            if file.endswith("_recognizer.py"):
-                example = os.path.join(EXAMPLE_RECOGNIZERS_PATH, file)
-                if example not in self.config.recognizer_paths:
-                    self.config.recognizer_paths.append(example)
+        for root, _, files in os.walk(EXAMPLE_RECOGNIZERS_PATH):
+            for file in files:
+                if file.endswith("_recognizer.py"):
+                    example = os.path.join(root, file)
+                    if all([example not in path for path in self.config.recognizer_paths]):
+                        self.config.recognizer_paths.append(example)
 
     def _run_in_parallel(self, backends, text):
         def target(func, arg, pipe_end):
