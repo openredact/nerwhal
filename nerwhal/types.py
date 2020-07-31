@@ -19,7 +19,7 @@ class NamedEntity:
 class Token:
     text: str
     has_ws: bool
-    has_br: bool
+    br_count: int
     start_char: int
     end_char: int
 

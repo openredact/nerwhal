@@ -30,7 +30,7 @@ class Tokenizer:
             Token(
                 text=token.text,
                 has_ws=token.whitespace_ == " ",
-                has_br="\n" in token.text,
+                br_count=token.text.count("\n"),
                 start_char=token.idx,
                 end_char=token.idx + len(token),
             )
