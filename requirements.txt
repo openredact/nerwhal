@@ -1,7 +1,8 @@
 # Dependencies
-spacy==2.2.4
-https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-2.2.5/de_core_news_sm-2.2.5.tar.gz
-flair==0.4.5
+spacy==2.3.2
+stanza==1.0.1
+flashtext==2.7
+pydantic==1.6.1
 
 # Development dependencies
 pre-commit==2.2.0

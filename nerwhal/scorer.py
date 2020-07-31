@@ -1,6 +1,24 @@
 from spacy.scorer import PRFScore
 
 
+def score_entities(candidates, gold):
+    """Compute a range of scores for a list of named entities compared to the true entities contained in the text.
+
+    :param candidates: a list of named entities, as returned by `nerwhal.recognize`
+    :param gold: the true list of named entities
+    :return: a dictionary with the scores
+    """
+    cand_tuples = _to_start_end_tag_tuples(candidates)
+    gold_tuples = _to_start_end_tag_tuples(gold)
+    tags = set([tag for _, _, tag in gold_tuples + cand_tuples])
+
+    scores = {"total": score(cand_tuples, gold_tuples), "tags": {}}
+    for tag in tags:
+        scores["tags"][tag] = score(_items_with_tag(tag, cand_tuples), _items_with_tag(tag, gold_tuples))
+
+    return scores
+
+
 def score(candidates, gold):
     """Compute the most common scoring measures for any two sets.
 
@@ -23,26 +41,8 @@ def score(candidates, gold):
     }
 
 
-def score_piis(piis, gold):
-    """Compute a range of scores for a list of piis compared to the true piis contained in the text.
-
-    :param piis: a list of piis, as returned by `nerwhal.find_piis`
-    :param gold: the true list of piis
-    :return: a dictionary with the scores
-    """
-    pii_tuples = _to_start_end_tag_tuples(piis)
-    gold_tuples = _to_start_end_tag_tuples(gold)
-    tags = set([tag for _, _, tag in gold_tuples + pii_tuples])
-
-    scores = {"total": score(pii_tuples, gold_tuples), "tags": {}}
-    for tag in tags:
-        scores["tags"][tag] = score(_items_with_tag(tag, pii_tuples), _items_with_tag(tag, gold_tuples))
-
-    return scores
-
-
-def _to_start_end_tag_tuples(piis):
-    tuples = [(pii.start_char, pii.end_char, pii.tag) for pii in piis]
+def _to_start_end_tag_tuples(ents):
+    tuples = [(ent.start_char, ent.end_char, ent.tag) for ent in ents]
     return tuples
 
 
