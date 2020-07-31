@@ -1,8 +1,6 @@
 import importlib.util
 import os
 from collections import OrderedDict
-from multiprocessing import Pipe
-from multiprocessing.context import Process
 from pathlib import Path
 from typing import List
 
@@ -65,8 +63,7 @@ class Analyzer:
             self.backends[recognizer_cls.BACKEND].register_recognizer(recognizer_cls)
 
     def run_recognition(self, text):
-        list_of_ent_lists = self._run_in_parallel(self.backends.values(), text)
-        return list_of_ent_lists
+        return self._run_backends(self.backends.values(), text)
 
     def _load_class(self, recognizer_path):
         module_name = os.path.splitext(os.path.basename(recognizer_path))[0]
@@ -85,22 +82,8 @@ class Analyzer:
                     if all([example not in path for path in self.config.recognizer_paths]):
                         self.config.recognizer_paths.append(example)
 
-    def _run_in_parallel(self, backends, text):
-        def target(func, arg, pipe_end):
-            pipe_end.send(func(arg))
-
-        jobs = []
-        pipe_conns = []
-        for backend in backends:
-            recv_end, send_end = Pipe(False)
-            proc = Process(target=target, args=(backend.run, text, send_end))
-            jobs.append(proc)
-            pipe_conns.append(recv_end)
-            proc.start()
-        for proc in jobs:
-            proc.join()
-        results = [conn.recv() for conn in pipe_conns]
-        return results
+    def _run_backends(self, backends, text):
+        return [backend.run(text) for backend in backends]
 
 
 analyzer = Analyzer()
