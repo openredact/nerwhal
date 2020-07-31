@@ -106,11 +106,11 @@ class Analyzer:
 analyzer = Analyzer()
 
 
-def recognize(text: str, config: Config, combination_strategy="append", context_words=False, compute_tokens=True) -> dict:
+def recognize(text: str, config: Config, combination_strategy="append", context_words=False, return_tokens=True) -> dict:
     """Find personally identifiable data in the given text and return it.
 
     :param context_words: if True, use context words to boost the score of entities: if one of the
-    :param compute_tokens:
+    :param return_tokens:
     :param config:
     :param text:
     :param combination_strategy: choose from `append`, `disjunctive_union` and `fusion`
@@ -125,13 +125,13 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
 
     result = {}
     tokens = []
-    if compute_tokens or context_words:
+    if return_tokens or context_words:
         # tokenize
         analyzer.tokenizer.tokenize(text)
         tokens = analyzer.tokenizer.get_tokens()
         add_token_indices(ents, tokens)
 
-    if compute_tokens:
+    if return_tokens:
         result["tokens"] = tokens
 
     if context_words:
