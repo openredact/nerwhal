@@ -10,7 +10,7 @@ from nerwhal.backends.stanza_ner_backend import StanzaNerBackend
 from nerwhal.tokenizer import Tokenizer
 from nerwhal.scorer import score_entities
 from nerwhal.types import Config, NamedEntity
-from nerwhal.utils import add_token_indices
+from nerwhal.entity_aligner import EntityAligner
 
 
 class Analyzer:
@@ -93,7 +93,7 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
     """Find personally identifiable data in the given text and return it.
 
     :param context_words: if True, use context words to boost the score of entities: if one of the
-    :param return_tokens:
+    :param return_tokens: this will also align the entities starts/ends to the nearest token start/end
     :param config:
     :param text:
     :param combination_strategy: choose from `append`, `disjunctive_union` and `fusion`
@@ -112,7 +112,8 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
         # tokenize
         analyzer.tokenizer.tokenize(text)
         tokens = analyzer.tokenizer.get_tokens()
-        add_token_indices(ents, tokens)
+        entity_aligner = EntityAligner()
+        entity_aligner.align_entities_with_tokens(ents, tokens)
 
     if return_tokens:
         result["tokens"] = tokens
