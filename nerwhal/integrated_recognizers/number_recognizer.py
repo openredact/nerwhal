@@ -1,12 +1,12 @@
 from nerwhal.recognizer_bases.re_recognizer import ReRecognizer
 
 
-class CardinalRecognizer(ReRecognizer):
+class NumberRecognizer(ReRecognizer):
     """
     """
 
-    TAG = "CARDINAL"
-    SCORE = 0.95
+    TAG = "NUMBER"
+    SCORE = 0.5  # give it a low score so that it doesn't overwrite other entities
 
     @property
     def regexp(self):
