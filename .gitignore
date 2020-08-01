@@ -1,3 +1,16 @@
+# PyCharm
 .idea/
+
+# Mac
+.DS_Store
+
+# Virtualenv
 venv/
+
+# Python
 nerwhal.egg-info/
+
+
+# Tests
+.coverage
+__pycache__
