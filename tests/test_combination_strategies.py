@@ -139,6 +139,44 @@ def test_fusion_strategy_with_multiple_overlaps_highest_score_last():
     assert combine(ents, strategy="fusion") == expected_ents
 
 
+def test_fusion_with_same_score_overlapping():
+    ents = [
+        NamedEntity(
+            start_char=301,
+            end_char=306,
+            tag="PHONE",
+            text="12345",
+            score=0.8,
+            recognizer="AnotherRecognizer",
+            start_tok=44,
+            end_tok=45,
+        ),
+        NamedEntity(
+            start_char=301,
+            end_char=313,
+            tag="LOC",
+            text="12345 Berlin",
+            score=0.8,
+            recognizer="AnotherRecognizer",
+            start_tok=44,
+            end_tok=46,
+        ),
+    ]
+    expected_ents = [
+        NamedEntity(
+            start_char=301,
+            end_char=313,
+            tag="LOC",
+            text="12345 Berlin",
+            score=0.8,
+            recognizer="AnotherRecognizer",
+            start_tok=44,
+            end_tok=46,
+        ),
+    ]
+    assert combine(ents, strategy="fusion") == expected_ents
+
+
 def test_smart_fusion_strategy_with_disjoint_ents():
     ents = [
         NamedEntity(start_char=0, end_char=8, tag="PER", text="Han Solo", score=0.94, recognizer="SomeRecognizer"),

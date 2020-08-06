@@ -51,6 +51,15 @@ def _overlapping_and_outscored(ent, other_ent):
     return other_ent and _overlapping(ent, other_ent) and ent.score < other_ent.score
 
 
+def _overlapping_with_same_score_but_shorter(ent, other_ent):
+    return (
+        other_ent
+        and _overlapping(ent, other_ent)
+        and ent.score == other_ent.score
+        and ent.end_tok - ent.start_tok < other_ent.end_tok - other_ent.start_tok
+    )
+
+
 def _fusion_strategy(ents):
     """A strategy to resolve overlapping named entities by giving those with higher scores priority."""
     res = []
@@ -58,7 +67,12 @@ def _fusion_strategy(ents):
     for idx, ent in enumerate(ents):
         next_ent = ents[idx + 1] if idx + 1 < len(ents) else None
 
-        if _overlapping_and_outscored(ent, prev_ent) or _overlapping_and_outscored(ent, next_ent):
+        if (
+            _overlapping_and_outscored(ent, prev_ent)
+            or _overlapping_and_outscored(ent, next_ent)
+            or _overlapping_with_same_score_but_shorter(ent, prev_ent)
+            or _overlapping_with_same_score_but_shorter(ent, next_ent)
+        ):
             # don't add this one
             continue
 
