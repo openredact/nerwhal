@@ -21,7 +21,7 @@ def combine(ents, *other_ents, strategy="append"):
     elif strategy == "fusion":
         combined = _fusion_strategy(items)
     elif strategy == "smart-fusion":
-        combined = _smart_fusion_strateg(items)
+        combined = _smart_fusion_strategy(items)
     else:
         raise ValueError(f"Unknown aggregation strategy {strategy}")
     return combined
@@ -72,7 +72,7 @@ def _is_same(ent_a, ent_b):
     return ent_a.start_char == ent_b.start_char and ent_a.end_char == ent_b.end_char and ent_a.tag == ent_b.tag
 
 
-def _smart_fusion_strateg(ents):
+def _smart_fusion_strategy(ents):
     deduplicated_ents = []
     for idx, ent in enumerate(ents):
         next_ent = ents[idx + 1] if idx + 1 < len(ents) else None
