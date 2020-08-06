@@ -4,21 +4,6 @@ from nerwhal import NamedEntity
 from nerwhal.combination_strategies import combine
 
 
-def test_interface():
-    ents_a = [NamedEntity(start_char=64, end_char=71, tag="MISC", text="han.solo", score=0.92, recognizer="SomeRecognizer")]
-    ents_b = [
-        NamedEntity(
-            start_char=64, end_char=85, tag="EMAIL", text="han.solo@imperium.com", score=1.0, recognizer="AnotherRecognizer"
-        )
-    ]
-    ents_c = [
-        NamedEntity(
-            start_char=64, end_char=85, tag="ORG", text="han.solo@imperium.com", score=0.83, recognizer="SomeRecognizer"
-        )
-    ]
-    assert combine(ents_a, ents_b, ents_c) == ents_a + ents_b + ents_c
-
-
 def test_append_strategy():
     ents = [
         NamedEntity(start_char=64, end_char=71, tag="MISC", text="han.solo", score=0.92, recognizer="SomeRecognizer"),

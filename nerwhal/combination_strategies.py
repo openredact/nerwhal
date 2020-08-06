@@ -1,5 +1,5 @@
-def combine(ents, *other_ents, strategy="append"):
-    """Combine two or more lists of named entities.
+def combine(ents, strategy="append"):
+    """Resolve conflicts in a list of entities.
 
     You can choose from several strategies for how to deal with overlapping entities.
     - `append`: Append all lists of entities.
@@ -8,20 +8,16 @@ def combine(ents, *other_ents, strategy="append"):
     - `fusion`: Appends the lists while choosing the entity with higher score on overlaps.
     - `smart-fusion`: Like fusion, but add scores if entities were identified multiple times.
     """
-    items = ents.copy()
-    for _ents in other_ents:
-        items.extend(_ents)
-
-    items.sort(key=lambda ent: (ent.start_char, ent.end_char, 1.0 - ent.score, ent.tag))
+    ents.sort(key=lambda ent: (ent.start_char, ent.end_char, 1.0 - ent.score, ent.tag))
 
     if strategy == "append":
-        combined = items
+        combined = ents
     elif strategy == "disjunctive_union":
-        combined = _disjunctive_union_strategy(items)
+        combined = _disjunctive_union_strategy(ents)
     elif strategy == "fusion":
-        combined = _fusion_strategy(items)
+        combined = _fusion_strategy(ents)
     elif strategy == "smart-fusion":
-        combined = _smart_fusion_strategy(items)
+        combined = _smart_fusion_strategy(ents)
     else:
         raise ValueError(f"Unknown aggregation strategy {strategy}")
     return combined
@@ -43,21 +39,8 @@ def _disjunctive_union_strategy(ents):
     return ents
 
 
-def _overlapping(ent_a, ent_b):
-    return ent_a.start_char <= ent_b.start_char < ent_a.end_char or ent_a.start_char < ent_b.end_char <= ent_a.end_char
-
-
-def _overlapping_and_outscored(ent, other_ent):
-    return other_ent and _overlapping(ent, other_ent) and ent.score < other_ent.score
-
-
-def _overlapping_with_same_score_but_shorter(ent, other_ent):
-    return (
-        other_ent
-        and _overlapping(ent, other_ent)
-        and ent.score == other_ent.score
-        and ent.end_tok - ent.start_tok < other_ent.end_tok - other_ent.start_tok
-    )
+def _overlapping(first, second):
+    return first.start_char <= second.start_char < first.end_char
 
 
 def _fusion_strategy(ents):
@@ -65,19 +48,32 @@ def _fusion_strategy(ents):
     res = []
     prev_ent = None
     for idx, ent in enumerate(ents):
-        next_ent = ents[idx + 1] if idx + 1 < len(ents) else None
-
-        if (
-            _overlapping_and_outscored(ent, prev_ent)
-            or _overlapping_and_outscored(ent, next_ent)
-            or _overlapping_with_same_score_but_shorter(ent, prev_ent)
-            or _overlapping_with_same_score_but_shorter(ent, next_ent)
-        ):
-            # don't add this one
+        if prev_ent is None:
+            res.append(ent)
+            prev_ent = ent
             continue
 
-        res += [ent]
-        prev_ent = ent
+        if not _overlapping(prev_ent, ent):
+            res.append(ent)
+            prev_ent = ent
+            continue
+
+        if _overlapping(prev_ent, ent):
+            if prev_ent.score < ent.score:
+                res[-1] = ent
+                prev_ent = ent
+                continue
+            elif prev_ent.score > ent.score:
+                continue
+            else:
+                prev_ent_length = prev_ent.end_char - prev_ent.start_char
+                ent_length = ent.end_char - ent.start_char
+                if prev_ent_length < ent_length:
+                    res[-1] = ent
+                    prev_ent = ent
+                    continue
+                else:
+                    continue
 
     return res
 

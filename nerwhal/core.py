@@ -104,7 +104,7 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
     if len(recognition_results) == 0:
         ents = []
     else:
-        ents = combine(*recognition_results, strategy=combination_strategy)
+        ents = [ent for result in recognition_results for ent in result]
 
     result = {}
     tokens = []
@@ -112,8 +112,12 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
         # tokenize
         analyzer.tokenizer.tokenize(text)
         tokens = analyzer.tokenizer.get_tokens()
+        # align entities with tokens
         entity_aligner = EntityAligner()
         entity_aligner.align_entities_with_tokens(ents, tokens)
+
+    # combine entities after they have been aligned
+    ents = combine(ents, strategy=combination_strategy)
 
     if return_tokens:
         result["tokens"] = tokens
