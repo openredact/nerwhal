@@ -10,4 +10,4 @@ class NumberRecognizer(ReRecognizer):
 
     @property
     def regexp(self):
-        return r"\d[,\.\d]+\d"
+        return r"\d[,\.\d]*\d?"
