@@ -1,8 +1,6 @@
 # NERwhal
 
-A multi-lingual suite for named-entity recognition in Python.
-
-_**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
+**A multi-lingual suite for named-entity recognition in Python.**
 
 ---
 
@@ -10,6 +8,8 @@ _**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anythi
 ![Black & Flake8](https://github.com/openredact/nerwhal/workflows/Black%20&%20Flake8/badge.svg?branch=master)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/ambv/black)
+
+_**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
 
 ## Description
 
@@ -114,6 +114,11 @@ To skip tests that require the download of Stanza models run:
 ```
 pytest -m "not stanza"
 ```
+
+## How to contact us
+
+For usage questions, bugs, or suggestions please file a Github issue.
+If you would like to contribute or have other questions please email hello@openredact.org.
 
 ## License
 
