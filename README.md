@@ -13,12 +13,12 @@ _**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anythi
 
 ## Description
 
-NERwhal's mission is to make defining custom recognizers for different NER approaches as easy as possibly.
+NERwhal's mission is to make defining custom recognizers for different NER approaches as easy as possible.
 To achieve this, different NER backends are implemented behind a unified API.
 Each recognizer is based on one of the backends.
 Users can detect named entities by implementing custom recognizers for one or more of the backends.
 
-We published a blog post about NERwhal on [Medium](https://medium.com/@openredact/nerwhal-a-multi-lingual-suite-for-named-entity-recognition-d3ac6beb547?source=friends_link&sk=24ad2960999523d371c2155bef10b60c).
+Check out our blog post about NERwhal on [Medium](https://medium.com/@openredact/nerwhal-a-multi-lingual-suite-for-named-entity-recognition-d3ac6beb547?source=friends_link&sk=24ad2960999523d371c2155bef10b60c).
 
 ### Powerful NER backends
 
@@ -43,9 +43,9 @@ If a context word is found in the same sentence as the entity, the confidence sc
 ## Integrated recognizers
 
 NERwhal follows the philosophy that recognizers are specific to the language, use case, and requirements.
-Thus, the intended way of usage is to define your own custom recognizers.
-Yet, to exemplify its usage and to help you bootstrap your own recognition suite, some example recognizers are implemented in [nerwhal/integrated_recognizers](nerwhal/integrated_recognizers).
-Please refer to each recognizers' PyDoc for more information and keep in mind, that none of these recognizers will recognize all occurrences of their category, and that they may produce false positives results.
+The recommended way to use is to define your own custom recognizers.
+Yet to exemplify its usage and to help you bootstrap your own recognition suite, some example recognizers are implemented in [nerwhal/integrated_recognizers](nerwhal/integrated_recognizers).
+Please refer to each recognizers' PyDoc for more information, and keep in mind that none of these recognizers will catch all occurrences of their category, and that they may produce false positives results.
 
 
 ## Usage
