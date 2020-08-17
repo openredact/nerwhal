@@ -18,7 +18,7 @@ def load_spacy_nlp(language, disable_components):
 
     try:
         spacy_nlp = spacy.load(language, disable=disable_components)
-    except IOError:
+    except OSError:
         subprocess.run(["python", "-m", "spacy", "download", language])
         spacy_nlp = spacy.load(language, disable=disable_components)
 
