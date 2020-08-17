@@ -1,8 +1,8 @@
-# Nerwhal
+# NERwhal
+
+A multi-lingual suite for named-entity recognition in Python.
 
 _**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
-
-A Python module that finds personally identifiable information in unstructured texts using NER and rule based matching.
 
 ---
 
@@ -13,61 +13,85 @@ A Python module that finds personally identifiable information in unstructured t
 
 ## Description
 
-Nerwhal is a framework that helps find named entities in text. Recognizers uncover
-mentions that can be used to identify persons, such as name, phone number or place of birth.
+NERwhal's mission is to make defining custom recognizers for different NER approaches as easy as possibly.
+To achieve this, different NER backends are implemented behind a unified API.
+Each recognizer is based on one of the backends.
+Users can detect named entities by implementing custom recognizers for one or more of the backends.
 
-Note, that while the package is language agnostic, the included models and recognizers are for the **German** language.
+We published a blog post about NERwhal on [Medium](https://medium.com/@openredact/nerwhal-a-multi-lingual-suite-for-named-entity-recognition-d3ac6beb547?source=friends_link&sk=24ad2960999523d371c2155bef10b60c).
 
-_**:warning: Disclaimer :warning::**_ This is a prototype, which must not be used in production without further protections. For
-the following reasons not all named entities can be found:
-- the set of recognizers is not exhaustive
-- the rules of each recognizer do not cover all of the ways in which information can be expressed; the limitations of
-each recognizer are to the best of our knowledge noted in its code documentation.
-- the statistical models used are not perfect and cannot be expected uncover all occurrences of the named entities that
-they are looking for
-- further this is a work in process which may contain bugs
-Further note, that the recognizers may return false positive finds. This work is limited to identifying named
-entities in the given text and that many indirect indicators as well as linkage with other data is out-of-scope.
+### Powerful NER backends
 
+NERwhal makes use of some of the most powerful NER platforms out there:
+- Regular expressions: Using [regular expressions](https://docs.python.org/3/library/re.html) you can define a named entity as a set of strings.
+- Entity Ruler: [spaCy’s](https://spacy.io/) [Entity Ruler](https://spacy.io/usage/rule-based-matching#entityruler) lets you define patterns for sequences of tokens. ([spaCy](https://spacy.io/) is also used for tokenization)
+- FlashText: The [FlashText Algorithm](https://arxiv.org/abs/1711.00046) can search texts very efficiently for long lists of keywords.
+- Deep Learning: The [Stanza](https://stanfordnlp.github.io/stanza/) library and models (which provide [state-of-the-art results for NER](https://arxiv.org/pdf/2003.07082.pdf) in many languages) power NERwhal's statistical recognition. Currently, Stanza supports NER for 8 languages.
 
-## Features
+### Smart combination of the results
 
-The recognizers are built on top of powerful NLP engines:
-- [spaCy](https://github.com/explosion/spaCy) for statistical NER and rule based matching on a token level
-- and of course the good ol' regular expressions
+The suite can combine the results of these methods in a smart way to get best results.
+E.g. a match with a higher score can overwrite a lower scored one, or, if one entity was identified several times, its confidence score can be increased.
 
-The engines can be found in the [Backends Package](nerwhal/backends). The recognizers operate on these backends
-and are located in the [Recognizers Package](nerwhal/integrated_recognizers).
+### Context words
+
+Each recognizer can define a list of context words that may occur in the context of named entities.
+If a context word is found in the same sentence as the entity, the confidence score is increased.
+
+![flowchart](docs/nerwhal.png "Flow Chart")
+
+## Integrated recognizers
+
+NERwhal follows the philosophy that recognizers are specific to the language, use case, and requirements.
+Thus, the intended way of usage is to define your own custom recognizers.
+Yet, to exemplify its usage and to help you bootstrap your own recognition suite, some example recognizers are implemented in [nerwhal/integrated_recognizers](nerwhal/integrated_recognizers).
+Please refer to each recognizers' PyDoc for more information and keep in mind, that none of these recognizers will recognize all occurrences of their category, and that they may produce false positives results.
+
 
 ## Usage
 
+To recognize named entities, pass a text and config object to the `recognize` method.
+Select the recognizers to be used in the config object.
+
 ```python
-from nerwhal import recognize, Config
-
-config = Config("de", ["nerwhal/example_recognizers/email_recognizer.py"])
-
-recognize("Ich heiße Luke und meine E-Mail ist luke@skywalker.com.", config=config)
+>>> from nerwhal import recognize, Config
+>>>
+>>> config = Config(language="de", use_statistical_ner=True, recognizer_paths=["nerwhal/integrated_recognizers/email_recognizer.py"])
+>>>
+>>> recognize("Ich heiße Luke und meine E-Mail ist luke@skywalker.com.", config=config, return_tokens=True)
+{
+    'tokens': [
+        Token(text='Ich', has_ws=True, br_count=0, start_char=0, end_char=3),
+        Token(text='heiße', has_ws=True, br_count=0, start_char=4, end_char=9),
+        ...
+        Token(text='.', has_ws=False, br_count=0, start_char=54, end_char=55)
+    ],
+    'ents': [
+        NamedEntity(start_char=10, end_char=14, tag='PER', text='Luke', score=0.8, recognizer='StanzaNerBackend', start_tok=2, end_tok=3),
+        NamedEntity(start_char=36, end_char=54, tag='EMAIL', text='luke@skywalker.com', score=0.95, recognizer='EmailRecognizer', start_tok=7, end_tok=8)
+    ]
+}
 ```
+
+### Implementing custom recognizers
+
+To implement a custom recognizer, you have to implement one of the interfaces in [recognizer_bases](nerwhal/recognizer_bases).
+For examples see one of the [integrated_recognizers](nerwhal/integrated_recognizers).
+
 
 ## Development
 
 ### Install requirements
 
-You can install all requirements using:
+You can install all (production and development) requirements using:
 
 ```
 pip install -r requirements.txt
 ```
 
-Compared to installation with `setup.py`, [requirements.txt](requirements.txt) additionally installs developer dependencies.
-
-To install it using `setup.py` run:
-
-```
-pip install .
-```
-
 ### Install the pre-commit hooks
+
+This repository uses git hooks to validate code quality and formatting.
 
 ```
 pre-commit install
@@ -81,14 +105,14 @@ pre-commit run --all-files
 
 ### Testing
 
-The tests can be executed with:
+Run all tests with:
 ```
 pytest --cov-report term --cov=nerwhal
 ```
 
-To skip tests that require the download of stanza models run:
+To skip tests that require the download of Stanza models run:
 ```
-pytest -m "not slow"
+pytest -m "not stanza"
 ```
 
 ## License
