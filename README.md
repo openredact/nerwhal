@@ -6,6 +6,7 @@
 
 ---
 
+[![PyPI version](https://badge.fury.io/py/nerwhal.svg)](https://badge.fury.io/py/nerwhal)
 ![Tests](https://github.com/openredact/nerwhal/workflows/Tests/badge.svg?branch=master)
 ![Black & Flake8](https://github.com/openredact/nerwhal/workflows/Black%20&%20Flake8/badge.svg?branch=master)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
@@ -40,7 +41,7 @@ E.g. a match with a higher score can overwrite a lower scored one, or, if one en
 Each recognizer can define a list of context words that may occur in the context of named entities.
 If a context word is found in the same sentence as the entity, the confidence score is increased.
 
-![flowchart](docs/flowchart.png "Named-entity recognition using NERwhal")
+![flowchart](https://raw.githubusercontent.com/openredact/nerwhal/master/docs/flowchart.png "Named-entity recognition using NERwhal")
 
 ## Integrated recognizers
 
@@ -48,6 +49,15 @@ NERwhal follows the philosophy that recognizers are specific to the language, us
 The recommended way to use is to define your own custom recognizers.
 Yet to exemplify its usage and to help you bootstrap your own recognition suite, some example recognizers are implemented in [nerwhal/integrated_recognizers](nerwhal/integrated_recognizers).
 Please refer to each recognizers' PyDoc for more information, and keep in mind that none of these recognizers will catch all occurrences of their category, and that they may produce false positives results.
+
+## Installation
+
+
+NERwhal can be installed from PyPi and has to be installed in a virtual environment (venv or conda for instance)
+
+```bash
+pip install nerwhal
+```
 
 
 ## Usage
