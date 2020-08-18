@@ -1,3 +1,5 @@
+<img src="docs/logo.png" width="125" align="right" />
+
 # NERwhal
 
 **A multi-lingual suite for named-entity recognition in Python.**
@@ -38,7 +40,7 @@ E.g. a match with a higher score can overwrite a lower scored one, or, if one en
 Each recognizer can define a list of context words that may occur in the context of named entities.
 If a context word is found in the same sentence as the entity, the confidence score is increased.
 
-![flowchart](docs/nerwhal.png "Flow Chart")
+![flowchart](docs/flowchart.png "Named-entity recognition using NERwhal")
 
 ## Integrated recognizers
 
