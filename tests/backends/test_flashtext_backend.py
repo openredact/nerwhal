@@ -1,4 +1,4 @@
-from nerwhal.backends.flashtext_backend import FlashTextBackend
+from nerwhal.backends.flashtext_backend import FlashtextBackend
 from nerwhal.recognizer_bases import FlashtextRecognizer
 
 
@@ -11,7 +11,7 @@ def test_single_recognizer(embed):
         def keywords(self):
             return ["abc", "cde"]
 
-    backend = FlashTextBackend()
+    backend = FlashtextBackend()
     backend.register_recognizer(TestRecognizer)
     text = "Das ist abc und cde."
     ents = backend.run(text)
@@ -41,7 +41,7 @@ def test_multiple_recognizers(embed):
         def keywords(self):
             return ["cde"]
 
-    backend = FlashTextBackend()
+    backend = FlashtextBackend()
     backend.register_recognizer(TestRecognizerA)
     backend.register_recognizer(TestRecognizerB)
     text = "Das ist abc und cde."
@@ -70,7 +70,7 @@ def test_overlapping_recognizers(embed):
         def keywords(self):
             return ["cde", "fgh"]
 
-    backend = FlashTextBackend()
+    backend = FlashtextBackend()
     backend.register_recognizer(TestRecognizerA)
     backend.register_recognizer(TestRecognizerB)
     text = "Das ist cde."

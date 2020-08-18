@@ -7,7 +7,7 @@ from nerwhal.types import NamedEntity
 from ..recognizer_bases import FlashtextRecognizer
 
 
-class FlashTextBackend(Backend):
+class FlashtextBackend(Backend):
     """This backend recognizes entities using the FlashText algorithm.
 
     See https://flashtext.readthedocs.io/en/latest/ for more information about the FlashText algorithm.
