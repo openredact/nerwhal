@@ -15,6 +15,11 @@ configure_spacy_entity_extension_attributes()
 
 
 class EntityRulerBackend(Backend):
+    """This backend recognizes entities using the spaCy EntityRuler.
+
+    See https://spacy.io/usage/rule-based-matching#entityruler for more information about the EntityRuler.
+    """
+
     def __init__(self, language):
         self.nlp = load_spacy_nlp(language, disable_components=["tagger", "parser", "ner"])
 

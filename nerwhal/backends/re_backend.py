@@ -7,6 +7,11 @@ from ..recognizer_bases import ReRecognizer
 
 
 class ReBackend(Backend):
+    """This backend recognizes entities using Python's regular expression engine.
+
+    See https://docs.python.org/3.7/library/re.html for more information.
+    """
+
     def __init__(self):
         self.compiled_regexps = []
         self.recognizer_classes = []

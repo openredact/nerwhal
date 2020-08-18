@@ -2,11 +2,15 @@ import subprocess
 
 
 def load_stanza_nlp(language, processors):
+    """Load the Stanza nlp object.
+
+    If the language's models cannot be found, they are downloaded.
+    """
     import stanza
 
     try:
         stanza_nlp = stanza.Pipeline(lang=language, processors=processors)
-    except Exception:
+    except (Exception, SystemExit):
         stanza.download(language, processors=processors)
         stanza_nlp = stanza.Pipeline(lang=language, processors=processors)
 
@@ -14,6 +18,10 @@ def load_stanza_nlp(language, processors):
 
 
 def load_spacy_nlp(language, disable_components):
+    """Load the spaCy nlp object.
+
+    If the language's models cannot be found, they are downloaded.
+    """
     import spacy
 
     try:
@@ -26,6 +34,7 @@ def load_spacy_nlp(language, disable_components):
 
 
 def configure_spacy_entity_extension_attributes():
+    """Add custom extension attributes to the spaCy Span class."""
     from spacy.tokens import Span
 
     if not Span.has_extension("score"):
@@ -35,6 +44,8 @@ def configure_spacy_entity_extension_attributes():
 
 
 def set_spacy_entity_extension_attributes(score, recognizer):
+    """Returns a spaCy pipeline component, that sets the score and recognizer in a doc's entities."""
+
     def function(doc):
         for ent in doc.ents:
             if ent._.score >= 0:

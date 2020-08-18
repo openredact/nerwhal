@@ -8,6 +8,15 @@ NER_SCORE = 0.8
 
 
 class StanzaNerBackend(Backend):
+    """This backend recognizes entities using Stanza's neural network models.
+
+    See https://stanfordnlp.github.io/stanza/ for more information on Stanza.
+
+    Work in process:
+    - this backend does not yet support different recognizers (i.e. custom models)
+    - instead it uses the default Stanza model for the provided language
+    """
+
     def __init__(self, language):
         self.stanza_nlp = load_stanza_nlp(language, processors="tokenize,mwt,ner")
 

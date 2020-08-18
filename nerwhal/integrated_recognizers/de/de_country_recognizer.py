@@ -7,7 +7,9 @@ from nerwhal.recognizer_bases.flashtext_recognizer import FlashtextRecognizer
 class DeCountryRecognizer(FlashtextRecognizer):
     """Recognize German country names in short and long form.
 
-    The long form is also recognized in many declined forms.
+    This recognizer searches for occurrences of German country names, loaded from a file. Thus, what it can find is limited by
+    the completeness of the data in this file. Our data file also contains many declined versions of the long form of country
+    names, that can then be recognized as well.
     """
 
     TAG = "COUNTRY"

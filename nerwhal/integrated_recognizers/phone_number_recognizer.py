@@ -6,17 +6,18 @@ from nerwhal.recognizer_bases.re_recognizer import ReRecognizer
 class PhoneNumberRecognizer(ReRecognizer):
     """Recognize phone numbers that follow several common German national and international patterns.
 
-    This recognizer finds numbers of DIN 5008 and E.123 style, Microsoft's canonical number format, and some
-    non-standard but frequently used styles.
+    This recognizer aims at finding numbers of DIN 5008 and E.123 style, Microsoft's canonical number format, and some
+    non-standard but frequently used styles. Because of the freedom that a user has in writing a phone number and splitting it
+    into differently sized blocks, it is difficult to find all occurrences and to not produce too many false positives.
+    You can refer to the regular expression below or the tests to see what sequences are detected.
 
     Consider the following remarks and limitations:
     - as there are many ways in which a phone number can be formatted, we cannot match all of them
-    - making the patterns too universal may produce false positives for entirely different numbers
-    - selecting the constants that limit the length of the number's parts constitutes a trade-off between detecting
-      more phone numbers in less common formats vs producing false identifications
-    - especially some unforeseen formatting into blocks of the national phone number may overlook numbers
-    - numbers in foreign styles or numbers in German style that represent a foreign number aren't tested and may not be
-      recognized
+    - making the patterns too universal may produce false positives for other sequences of digits such as credit card numbers
+    - choosing the quantifiers for the digits in a black constitutes a trade-off between detecting more phone numbers in
+      less common formats vs producing false positives
+    - especially, numbers in foreign styles or numbers in German style that represent a foreign number aren't tested and may
+      not be recognized
     """
 
     TAG = "PHONE"

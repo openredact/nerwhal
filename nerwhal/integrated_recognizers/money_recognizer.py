@@ -2,7 +2,11 @@ from nerwhal.recognizer_bases.entity_ruler_recognizer import EntityRulerRecogniz
 
 
 class MoneyRecognizer(EntityRulerRecognizer):
-    """This recognizes money amounts written with a currency symbols. Currency codes or names are not recognized.
+    """Recognize money amounts written as a number followed by a currency symbol.
+
+    Attention: This recognizer does only match one of the manifold ways that money amounts can be written.
+
+    For example, currency codes or currency names are not recognized.
     """
 
     TAG = "MONEY"

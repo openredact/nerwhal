@@ -10,9 +10,9 @@ def setup_backend():
 
             backend = ReBackend()
         elif backend == "flashtext":
-            from nerwhal.backends.flashtext_backend import FlashtextBackend
+            from nerwhal.backends.flashtext_backend import FlashTextBackend
 
-            backend = FlashtextBackend()
+            backend = FlashTextBackend()
         elif backend == "entity-ruler":
             from nerwhal.backends.entity_ruler_backend import EntityRulerBackend
 

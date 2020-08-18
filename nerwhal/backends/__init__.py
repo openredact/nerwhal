@@ -2,6 +2,8 @@ from importlib import import_module
 
 
 def load(backend):
+    """Dynamically load the requested backend module."""
+
     if backend == "re":
         mod = ".re_backend"
         cls = "ReBackend"

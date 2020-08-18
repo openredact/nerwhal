@@ -1,18 +1,19 @@
-def combine(ents, strategy="append"):
-    """Resolve conflicts in a list of entities.
+def combine(ents, strategy=None):
+    """Process a list of entities using different strategies to deal with overlapping or conflicting entities.
 
-    You can choose from several strategies for how to deal with overlapping entities.
-    - `append`: Append all lists of entities.
-    - `disjunctive_union`: The disjunctive union of all entities. This assumes the lists to be disjunct;
+    This function offers the following strategies:
+    - None: Keep all entities.
+    - `disjunctive_union`: This function keeps and returns all entities, but assumes their character spans to be disjunct;
         an error is thrown if two entities overlap.
-    - `fusion`: Appends the lists while choosing the entity with higher score on overlaps.
-    - `smart-fusion`: Like fusion, but add scores if entities were identified multiple times.
+    - `fusion`: Resolve overlapping entities of different tags by keeping that with the highest score.
+    - `smart-fusion`: Like fusion, but add scores if one entity occurs multiple times with the same tag.
     """
     ents.sort(key=lambda ent: (ent.start_char, ent.end_char, 1.0 - ent.score, ent.tag))
 
-    if strategy == "append":
-        combined = ents
-    elif strategy == "disjunctive_union":
+    if strategy is None:
+        return ents
+
+    if strategy == "disjunctive_union":
         combined = _disjunctive_union_strategy(ents)
     elif strategy == "fusion":
         combined = _fusion_strategy(ents)
@@ -20,13 +21,14 @@ def combine(ents, strategy="append"):
         combined = _smart_fusion_strategy(ents)
     else:
         raise ValueError(f"Unknown aggregation strategy {strategy}")
+
     return combined
 
 
 def _disjunctive_union_strategy(ents):
-    """A strategy that ensures that all entities are disjoint.
+    """This strategy ensures that all entities are disjoint.
 
-    Checks that all entities are disjoint by comparing end of previous entity with start of the current one.
+    Checks that all entities are disjoint by comparing the end of the previous entity with the start of the current one.
     """
     prev_ent_end = 0
     for ent in ents:
@@ -44,7 +46,7 @@ def _overlapping(first, second):
 
 
 def _fusion_strategy(ents):
-    """A strategy to resolve overlapping named entities by giving those with higher scores priority."""
+    """This strategy resolves overlapping named entities by giving those with higher scores priority."""
     res = []
     prev_ent = None
     for idx, ent in enumerate(ents):
@@ -83,6 +85,8 @@ def _is_same(ent_a, ent_b):
 
 
 def _smart_fusion_strategy(ents):
+    """This strategy adds the entities scores if one entity occurs multiple times with the same tag, and afterwards
+    applies the fusion strategy."""
     deduplicated_ents = []
     for idx, ent in enumerate(ents):
         next_ent = ents[idx + 1] if idx + 1 < len(ents) else None

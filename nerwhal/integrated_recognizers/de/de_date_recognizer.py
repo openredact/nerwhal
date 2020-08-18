@@ -2,7 +2,10 @@ from nerwhal.recognizer_bases.entity_ruler_recognizer import EntityRulerRecogniz
 
 
 class DeDateRecognizer(EntityRulerRecognizer):
-    """
+    """Recognize dates (without time) in common German formats.
+
+    The recognizer aims at matching date formats in the DIN 1355-1 and DIN 5008 formats, as well as in the commonly used
+    "DD. Monat YYYY" format. For details on what is matched, please have a look at the pattern definition.
     """
 
     TAG = "DATE"

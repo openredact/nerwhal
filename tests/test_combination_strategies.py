@@ -4,7 +4,7 @@ from nerwhal import NamedEntity
 from nerwhal.combination_strategies import combine
 
 
-def test_append_strategy():
+def test_none_strategy():
     ents = [
         NamedEntity(start_char=64, end_char=71, tag="MISC", text="han.solo", score=0.92, recognizer="SomeRecognizer"),
         NamedEntity(
@@ -14,7 +14,7 @@ def test_append_strategy():
             start_char=64, end_char=85, tag="ORG", text="han.solo@imperium.com", score=0.83, recognizer="SomeRecognizer"
         ),
     ]
-    assert combine(ents, strategy="append") == ents
+    assert combine(ents, strategy=None) == ents
 
 
 def test_disjunctive_union_strategy_with_disjoint_ents():

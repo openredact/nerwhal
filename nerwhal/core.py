@@ -14,6 +14,8 @@ from nerwhal.entity_aligner import EntityAligner
 
 
 class Analyzer:
+    """The Analyzer class is NERwhal's core component, that runs named-entity recognition and caches the recognizers."""
+
     def __init__(self):
         self.config = None
         self.backends = OrderedDict()
@@ -21,10 +23,9 @@ class Analyzer:
         self.recognizer_lookup = None
 
     def update_config(self, config):
-        """Whenever the config is changed, the state of core is rebuilt from scratch.
+        """Whenever one field of the config changed its value, the Analyzer's state is rebuilt from scratch.
 
-        :param config:
-        :return:
+        While reloading every recognizer and backend from scratch isn't the most efficient way, it is simple.
         """
         if config == self.config:
             return
@@ -63,9 +64,14 @@ class Analyzer:
             self.backends[recognizer_cls.BACKEND].register_recognizer(recognizer_cls)
 
     def run_recognition(self, text):
+        """Run recognition and return the recognized named-entities."""
         return self._run_backends(self.backends.values(), text)
 
     def _load_class(self, recognizer_path):
+        """Load the class of a (custom) recognizer.
+
+        This class may be located outside of NERwhal's package.
+        """
         module_name = os.path.splitext(os.path.basename(recognizer_path))[0]
         spec = importlib.util.spec_from_file_location(module_name, recognizer_path)
         module = importlib.util.module_from_spec(spec)
@@ -75,6 +81,7 @@ class Analyzer:
         return recognizer_cls
 
     def _add_integrated_recognizers_to_config_recognizer_paths(self):
+        """Traverse the directory of integrated recognizers and append them to the recognizer paths."""
         for root, _, files in os.walk(Path(__file__).parent / "integrated_recognizers"):
             for file in files:
                 if file.endswith("_recognizer.py"):
@@ -89,14 +96,18 @@ class Analyzer:
 analyzer = Analyzer()
 
 
-def recognize(text: str, config: Config, combination_strategy="append", context_words=False, return_tokens=True) -> dict:
+def recognize(text: str, config: Config, combination_strategy=None, context_words=False, return_tokens=True) -> dict:
     """Find personally identifiable data in the given text and return it.
 
-    :param context_words: if True, use context words to boost the score of entities: if one of the
-    :param return_tokens: this will also align the entities starts/ends to the nearest token start/end
-    :param config:
-    :param text:
-    :param combination_strategy: choose from `append`, `disjunctive_union` and `fusion`
+    :param text: the text that is searched for named entities
+    :param config: pass a config object to configure the recognition methods
+    :param combination_strategy: choose from None, `disjunctive_union`, `fusion`, and `smart-fusion`; see the docs of
+        `combination_strategies.combine` for more details
+    :param context_words: if True, use context words to boost the score of entities: this is the case, if one of a recognizer's
+        context words appears in the entity's sentence. Setting `context_words` to True will also align each entity's
+        start/end to the nearest token's start/end
+    :param return_tokens: compute and return the tokenization; this will also align each entity's start/end to the nearest
+        token's start/end
     """
     analyzer.update_config(config)
     recognition_results = analyzer.run_recognition(text)
@@ -137,9 +148,8 @@ def recognize(text: str, config: Config, combination_strategy="append", context_
 
 
 def evaluate(ents: List[NamedEntity], gold: List[NamedEntity]) -> dict:
-    """Compute the scores of a list of recognized named entities compared to the corresponding true entities.
+    """Compute the evaluation scores of computed named entities compared to the underlying true entities.
 
-    Each named entity is required to have the fields `start_char`, `end_char` and `tag` populated. The remaining fields
-    are ignored.
+    Each entity has to have the fields `start_char`, `end_char` and `tag` populated. The remaining fields are ignored.
     """
     return score_entities(ents, gold)
