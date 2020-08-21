@@ -1,4 +1,4 @@
-<img src="docs/logo.png" width="125" align="right" />
+<img src="https://raw.githubusercontent.com/openredact/nerwhal/master/docs/logo.png" width="125" align="right" />
 
 # NERwhal
 
@@ -12,7 +12,7 @@
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/ambv/black)
 
-_**:warning: Disclaimer :warning::**_ This is a prototype. Do not use for anything critical.
+_**⚠️ Disclaimer ⚠️:**_ This is a prototype. Do not use for anything critical.
 
 ## Description
 
@@ -53,7 +53,7 @@ Please refer to each recognizers' PyDoc for more information, and keep in mind t
 ## Installation
 
 
-NERwhal can be installed from PyPi and has to be installed in a virtual environment (venv or conda for instance)
+NERwhal can be installed from PyPi and has to be installed in a virtual environment (venv or conda for instance).
 
 ```bash
 pip install nerwhal
