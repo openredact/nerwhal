@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name="nerwhal",
-    version="0.1.1",
+    version="0.1.2",
     url="https://openredact.org/",
     author="Jonas Langhabel",
     author_email="hello@openredact.org",
